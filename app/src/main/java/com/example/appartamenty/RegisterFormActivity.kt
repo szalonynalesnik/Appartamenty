@@ -9,11 +9,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -24,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,8 +46,10 @@ class RegisterFormActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(context: Context) {
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -93,7 +95,7 @@ fun RegisterWelcome(context: Context) {
         Text(
             text = "Welcome!",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.outline,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .fillMaxWidth(),
             textAlign = TextAlign.Center
@@ -108,14 +110,17 @@ fun RegisterForm(context: Context) {
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedTextField(
             value = email,
@@ -129,7 +134,6 @@ fun RegisterForm(context: Context) {
                 Text(
                     text = stringResource(R.string.enteremail),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
                 )
 
             },
@@ -153,8 +157,7 @@ fun RegisterForm(context: Context) {
             placeholder = {
                 Text(
                     text = stringResource(R.string.enterfirstname),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -178,8 +181,7 @@ fun RegisterForm(context: Context) {
             placeholder = {
                 Text(
                     text = stringResource(R.string.enterlastname),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -200,11 +202,11 @@ fun RegisterForm(context: Context) {
                     text = stringResource(R.string.password)
                 )
             },
+            singleLine = true,
             placeholder = {
                 Text(
                     text = stringResource(R.string.enterpassword),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -214,9 +216,19 @@ fun RegisterForm(context: Context) {
                     contentDescription = "lock"
                 )
             },
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    Icons.Default.Visibility
+                else
+                    Icons.Default.VisibilityOff
+                val description = if (passwordVisible) "Hide password" else "Show password"
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, description)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 
         )
@@ -231,8 +243,7 @@ fun RegisterForm(context: Context) {
             placeholder = {
                 Text(
                     text = "Confirm your password...",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -242,9 +253,20 @@ fun RegisterForm(context: Context) {
                     contentDescription = "lock"
                 )
             },
+            singleLine = true,
+            trailingIcon = {
+                val image = if (confirmPasswordVisible)
+                    Icons.Default.Visibility
+                else
+                    Icons.Default.VisibilityOff
+                val description = if (confirmPasswordVisible) "Hide password" else "Show password"
+                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                    Icon(imageVector = image, description)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 
         )

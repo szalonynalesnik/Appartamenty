@@ -11,8 +11,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -93,10 +96,10 @@ fun LoginWelcome(context: Context) {
         Text(
             text = "Nice to see you again!",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.outline,
             modifier = Modifier
                 .fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -106,13 +109,15 @@ fun LoginWelcome(context: Context) {
 @Composable
 fun LoginForm(context: Context) {
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedTextField(
             value = email,
@@ -125,8 +130,7 @@ fun LoginForm(context: Context) {
             placeholder = {
                 Text(
                     text = stringResource(R.string.enteremail),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -142,6 +146,7 @@ fun LoginForm(context: Context) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
+            singleLine = true,
             label = {
                 Text(
                     text = stringResource(R.string.password)
@@ -150,8 +155,7 @@ fun LoginForm(context: Context) {
             placeholder = {
                 Text(
                     text = stringResource(R.string.enterpassword),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -160,6 +164,16 @@ fun LoginForm(context: Context) {
                     Icons.Default.Lock,
                     contentDescription = "lock"
                 )
+            },
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    Icons.Default.Visibility
+                else
+                    Icons.Default.VisibilityOff
+                val description = if (passwordVisible) "Hide password" else "Show password"
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, description)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -202,7 +216,7 @@ fun logged(email: String, password: String, context: Context) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun DefaultPreview() {
+fun LoginPreview() {
     val context = LocalContext.current
     AppartamentyTheme {
         LoginScreen(context)
