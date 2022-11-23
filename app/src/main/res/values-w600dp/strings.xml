@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emailaddress">E-mail address</string>
+    <string name="enteremail">Enter your e-mail address...</string>
+    <string name="password">Password</string>
+    <string name="enterpassword">Enter your password...</string>
+    <string name="loginbutton">Login</string>
+    <string name="confirmpassword">Confirm password</string>
+    <string name="enterlastname">Enter your last name...</string>
+    <string name="lastname">Last name</string>
+    <string name="enterfirstname">Enter your first name...</string>
+    <string name="firstname">First name</string>
+</resources>

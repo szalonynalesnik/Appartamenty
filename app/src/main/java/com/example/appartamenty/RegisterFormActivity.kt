@@ -7,35 +7,29 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 
-class LoginActivity : ComponentActivity() {
+class RegisterFormActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,29 +39,28 @@ class LoginActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(applicationContext)
+                    RegisterScreen(applicationContext)
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(context: Context) {
+fun RegisterScreen(context: Context) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LoginWelcome(context = context)
-        LoginForm(context = context)
+        RegisterWelcome(context = context)
+        RegisterForm(context = context)
     }
 }
 
 @Composable
-fun LoginWelcome(context: Context) {
+fun RegisterWelcome(context: Context) {
     val image = painterResource(R.drawable.applogo)
 
     Column(
@@ -98,7 +91,7 @@ fun LoginWelcome(context: Context) {
             )
         }
         Text(
-            text = "Nice to see you again!",
+            text = "Welcome!",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.outline,
             modifier = Modifier
@@ -111,9 +104,12 @@ fun LoginWelcome(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginForm(context: Context) {
+fun RegisterForm(context: Context) {
     var email by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -126,12 +122,12 @@ fun LoginForm(context: Context) {
             onValueChange = { email = it },
             label = {
                 Text(
-                    text = "E-mail address",
+                    text = stringResource(R.string.emailaddress),
                 )
             },
             placeholder = {
                 Text(
-                    text = "Enter your e-mail address...",
+                    text = stringResource(R.string.enteremail),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -147,16 +143,94 @@ fun LoginForm(context: Context) {
                 .fillMaxWidth(),
         )
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = firstName,
+            onValueChange = { firstName = it },
             label = {
                 Text(
-                    text = "Password"
+                    text = stringResource(R.string.firstname),
                 )
             },
             placeholder = {
                 Text(
-                    text = "Enter your password...",
+                    text = stringResource(R.string.enterfirstname),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+            },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "first name"
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            label = {
+                Text(
+                    text = stringResource(R.string.lastname),
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.enterlastname),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+            },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "last name"
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = {
+                Text(
+                    text = stringResource(R.string.password)
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.enterpassword),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+
+            },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Lock,
+                    contentDescription = "lock"
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+
+        )
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = {
+                Text(
+                    text = stringResource(R.string.confirmpassword)
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "Confirm your password...",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -176,16 +250,17 @@ fun LoginForm(context: Context) {
         )
         Button(
             onClick = {
-                logged(email, password, context)
+                registered(email, password, context)
             },
             modifier = Modifier
-                .padding(top = 24.dp),
+                .padding(top = 24.dp)
+                .width(intrinsicSize = IntrinsicSize.Max),
         ) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                text = "Login",
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                text = "Register",
                 textAlign = TextAlign.Center
             )
 
@@ -194,11 +269,11 @@ fun LoginForm(context: Context) {
 }
 
 //@Composable
-//fun LoginButton(email: String, password: String, context: Context) {
+//fun RegisterButton(email: String, password: String, context: Context) {
 //
 //}
 
-fun logged(email: String, password: String, context: Context) {
+fun registered(email: String, password: String, context: Context) {
     if (email == "ania" && password == "1234") {
         Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
     } else {
@@ -208,9 +283,9 @@ fun logged(email: String, password: String, context: Context) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun DefaultPreview() {
+fun RegisterPreview() {
     val context = LocalContext.current
     AppartamentyTheme {
-        LoginScreen(context)
+        RegisterScreen(context)
     }
 }
