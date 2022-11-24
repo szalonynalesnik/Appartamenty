@@ -282,7 +282,7 @@ fun RegisterForm(context: Context) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = "Register",
+                text = stringResource(R.string.registerbutton),
                 textAlign = TextAlign.Center
             )
 
