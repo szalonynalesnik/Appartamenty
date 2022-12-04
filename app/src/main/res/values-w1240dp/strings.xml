@@ -11,4 +11,9 @@
     <string name="enterfirstname">Enter your first name...</string>
     <string name="firstname">First name</string>
     <string name="registerbutton">Register</string>
+    <string name="contact_tenants">Contact tenants</string>
+    <string name="faultr_reports">Fault reports</string>
+    <string name="calendar">Calendar</string>
+    <string name="utility_meter_readings">Utility meter readings</string>
+    <string name="manage_properties">Manage properties</string>
 </resources>
