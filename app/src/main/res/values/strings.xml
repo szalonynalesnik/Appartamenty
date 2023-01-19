@@ -29,4 +29,8 @@
     <string name="calendar">Calendar</string>
     <string name="utility_meter_readings">Utility meter readings</string>
     <string name="manage_properties">Manage properties</string>
+    <string name="title_activity_main_screen_tenant">MainScreenTenantActivity</string>
+    <string name="report_fault">Report a fault</string>
+    <string name="contact_landlord">Contact the landlord</string>
+    <string name="title_activity_tenant_add_real_estate">TenantAddRealEstate</string>
 </resources>

@@ -16,4 +16,6 @@
     <string name="calendar">Calendar</string>
     <string name="utility_meter_readings">Utility meter readings</string>
     <string name="manage_properties">Manage properties</string>
+    <string name="report_fault">Report a fault</string>
+    <string name="contact_landlord">Contact the landlord</string>
 </resources>

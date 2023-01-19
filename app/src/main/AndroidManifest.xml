@@ -13,6 +13,24 @@
         android:theme="@style/Theme.Appartamenty"
         tools:targetApi="31">
         <activity
+            android:name=".TenantAddRealEstate"
+            android:exported="false"
+            android:label="@string/title_activity_tenant_add_real_estate"
+            android:theme="@style/Theme.Appartamenty">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".MainScreenTenantActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main_screen_tenant"
+            android:theme="@style/Theme.Appartamenty">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".MainScreenLandlordActivity"
             android:exported="false"
             android:label="@string/title_activity_main_screen_landlord"
