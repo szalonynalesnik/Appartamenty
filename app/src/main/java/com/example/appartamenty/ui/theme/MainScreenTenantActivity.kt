@@ -75,6 +75,7 @@ fun TenantChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+
             ) {
                 Column(
                     modifier = Modifier
