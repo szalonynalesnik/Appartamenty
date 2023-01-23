@@ -74,7 +74,11 @@ fun TenantChooser(context: Context) {
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
 
             ) {
                 Column(
@@ -102,7 +106,11 @@ fun TenantChooser(context: Context) {
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Column(
                     modifier = Modifier
@@ -137,7 +145,11 @@ fun TenantChooser(context: Context) {
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Column(
                     modifier = Modifier
@@ -164,7 +176,11 @@ fun TenantChooser(context: Context) {
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Column(
                     modifier = Modifier
