@@ -1,4 +1,4 @@
-package com.example.appartamenty.ui.theme
+package com.example.appartamenty
 
 import android.content.Context
 import android.os.Bundle

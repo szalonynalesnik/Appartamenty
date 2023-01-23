@@ -1,4 +1,4 @@
-package com.example.appartamenty.ui.theme
+package com.example.appartamenty
 
 import android.content.Context
 import android.os.Bundle
@@ -9,7 +9,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,13 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 
-class RegisterFormActivity : ComponentActivity() {
+class LoginFormActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,7 +41,7 @@ class RegisterFormActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RegisterScreen(applicationContext)
+                    LoginScreen(applicationContext)
                 }
             }
         }
@@ -48,21 +50,20 @@ class RegisterFormActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(context: Context) {
-
+fun LoginScreen(context: Context) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterWelcome(context = context)
-        RegisterForm(context = context)
+        LoginWelcome(context = context)
+        LoginForm(context = context)
     }
 }
 
 @Composable
-fun RegisterWelcome(context: Context) {
+fun LoginWelcome(context: Context) {
     val image = painterResource(R.drawable.applogo)
 
     Column(
@@ -93,12 +94,12 @@ fun RegisterWelcome(context: Context) {
             )
         }
         Text(
-            text = "Welcome!",
+            text = "Nice to see you again!",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -106,14 +107,10 @@ fun RegisterWelcome(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterForm(context: Context) {
+fun LoginForm(context: Context) {
     var email by remember { mutableStateOf("") }
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
-    var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -133,7 +130,7 @@ fun RegisterForm(context: Context) {
             placeholder = {
                 Text(
                     text = stringResource(R.string.enteremail),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall
                 )
 
             },
@@ -147,62 +144,14 @@ fun RegisterForm(context: Context) {
                 .fillMaxWidth(),
         )
         OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.firstname),
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.enterfirstname),
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-            },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "first name"
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.lastname),
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.enterlastname),
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-            },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "last name"
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-        OutlinedTextField(
             value = password,
             onValueChange = { password = it },
+            singleLine = true,
             label = {
                 Text(
                     text = stringResource(R.string.password)
                 )
             },
-            singleLine = true,
             placeholder = {
                 Text(
                     text = stringResource(R.string.enterpassword),
@@ -228,51 +177,13 @@ fun RegisterForm(context: Context) {
             },
             modifier = Modifier
                 .fillMaxWidth(),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-
-        )
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.confirmpassword)
-                )
-            },
-            placeholder = {
-                Text(
-                    text = "Confirm your password...",
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-            },
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Lock,
-                    contentDescription = "lock"
-                )
-            },
-            singleLine = true,
-            trailingIcon = {
-                val image = if (confirmPasswordVisible)
-                    Icons.Default.Visibility
-                else
-                    Icons.Default.VisibilityOff
-                val description = if (confirmPasswordVisible) "Hide password" else "Show password"
-                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                    Icon(imageVector = image, description)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 
         )
         Button(
             onClick = {
-                registered(email, password, context)
+                logged(email, password, context)
             },
             modifier = Modifier
                 .padding(top = 24.dp)
@@ -282,7 +193,7 @@ fun RegisterForm(context: Context) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = stringResource(R.string.registerbutton),
+                text = stringResource(R.string.loginbutton),
                 textAlign = TextAlign.Center
             )
 
@@ -291,11 +202,11 @@ fun RegisterForm(context: Context) {
 }
 
 //@Composable
-//fun RegisterButton(email: String, password: String, context: Context) {
+//fun LoginButton(email: String, password: String, context: Context) {
 //
 //}
 
-fun registered(email: String, password: String, context: Context) {
+fun logged(email: String, password: String, context: Context) {
     if (email == "ania" && password == "1234") {
         Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
     } else {
@@ -305,9 +216,9 @@ fun registered(email: String, password: String, context: Context) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun RegisterPreview() {
+fun LoginPreview() {
     val context = LocalContext.current
     AppartamentyTheme {
-        RegisterScreen(context)
+        LoginScreen(context)
     }
 }

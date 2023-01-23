@@ -1,4 +1,4 @@
-package com.example.appartamenty.ui.theme
+package com.example.appartamenty
 
 import android.content.Context
 import android.graphics.drawable.Icon
@@ -27,7 +27,7 @@ import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
 import com.example.appartamenty.registered
 
-class MainScreenLandlordActivity : ComponentActivity() {
+class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,7 +37,7 @@ class MainScreenLandlordActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LandlordMainScreen(applicationContext)
+                    TenantMainScreen(applicationContext)
                 }
             }
         }
@@ -45,7 +45,7 @@ class MainScreenLandlordActivity : ComponentActivity() {
 }
 
 @Composable
-fun LandlordMainScreen(context: Context) {
+fun TenantMainScreen(context: Context) {
 
     Column(
         modifier = Modifier
@@ -54,74 +54,16 @@ fun LandlordMainScreen(context: Context) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppLogo()
-        LandlordChooser(context)
+        TenantChooser(context)
     }
 }
 
 @Composable
-fun AppLogo() {
-    val image = painterResource(R.drawable.applogo)
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = image,
-            contentDescription = "logo",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(50.dp)
-                .padding(horizontal = 8.dp),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-        )
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Light,
-            modifier = Modifier,
-        )
-    }
-}
-
-@Composable
-fun LandlordChooser(context: Context) {
+fun TenantChooser(context: Context) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(top = 16.dp, bottom = 8.dp)
-        ) {
-            Card(
-                modifier = Modifier,
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        Icons.Default.Home,
-                        contentDescription = "properties",
-                        modifier = Modifier
-                            .size(48.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = stringResource(R.string.manage_properties),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
         Row(
             modifier = Modifier
                 .height(intrinsicSize = IntrinsicSize.Max)
@@ -133,6 +75,7 @@ fun LandlordChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+
             ) {
                 Column(
                     modifier = Modifier
@@ -205,14 +148,14 @@ fun LandlordChooser(context: Context) {
                 ) {
                     Icon(
                         Icons.Default.Build,
-                        contentDescription = "fault reports",
+                        contentDescription = "report a fault",
                         modifier = Modifier
                             .size(48.dp)
                     )
                     Text(
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = stringResource(R.string.faultr_reports),
+                        text = stringResource(R.string.report_fault),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -232,7 +175,7 @@ fun LandlordChooser(context: Context) {
                 ) {
                     Icon(
                         Icons.Default.Chat,
-                        contentDescription = "contact tenants",
+                        contentDescription = "contact landlord",
                         modifier = Modifier
                             .size(48.dp),
                     )
@@ -240,7 +183,7 @@ fun LandlordChooser(context: Context) {
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
                             .fillMaxWidth(),
-                        text = stringResource(R.string.contact_tenants),
+                        text = stringResource(R.string.contact_landlord),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -252,9 +195,9 @@ fun LandlordChooser(context: Context) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainScreenLandlordPreview() {
+fun MainScreenTenantPreview() {
     val context = LocalContext.current
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        LandlordMainScreen(context)
+        TenantMainScreen(context)
     }
 }
