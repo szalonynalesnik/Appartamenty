@@ -2,29 +2,22 @@ package com.example.appartamenty
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.ToggleButton
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.appartamenty.R
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 
-class TenantAddRealEstate : ComponentActivity() {
+class LandlordAddRealEstate : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -34,7 +27,7 @@ class TenantAddRealEstate : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TenantAddRealEstateMainScreen(applicationContext)
+                    LandlordAddRealEstateMainScreen(applicationContext)
                 }
             }
         }
@@ -42,7 +35,7 @@ class TenantAddRealEstate : ComponentActivity() {
 }
 
 @Composable
-fun TenantAddRealEstateMainScreen(context: Context) {
+fun LandlordAddRealEstateMainScreen(context: Context) {
 
     Column(
         modifier = Modifier
@@ -313,9 +306,9 @@ fun ConfirmButton(){
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TenantAddRealEstatePreview() {
+fun LandlordAddRealEstatePreview() {
     val context = LocalContext.current
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        TenantAddRealEstateMainScreen(context)
+        LandlordAddRealEstateMainScreen(context)
     }
 }
