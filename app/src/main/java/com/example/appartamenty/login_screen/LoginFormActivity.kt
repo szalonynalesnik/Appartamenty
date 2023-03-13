@@ -1,4 +1,4 @@
-package com.example.appartamenty
+package com.example.appartamenty.login_screen
 
 import android.content.Context
 import android.os.Bundle

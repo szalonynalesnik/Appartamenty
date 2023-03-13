@@ -1,4 +1,4 @@
-package com.example.appartamenty
+package com.example.appartamenty.signup_screen
 
 import android.content.Context
 import android.os.Bundle
@@ -27,7 +27,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.appartamenty.R
 import com.example.appartamenty.ui.theme.AppartamentyTheme
+
 
 class RegisterFormActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

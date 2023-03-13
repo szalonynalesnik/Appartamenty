@@ -34,4 +34,5 @@
     <string name="contact_landlord">Contact the landlord</string>
     <string name="title_activity_tenant_add_real_estate">TenantAddRealEstate</string>
     <string name="title_activity_tenant_add_readings">TenantAddReadingsActivity</string>
+    <string name="title_activity_sign_up_screen">SignUpScreen</string>
 </resources>
