@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
-import com.example.appartamenty.registered
 
 class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
