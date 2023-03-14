@@ -13,6 +13,11 @@
         android:theme="@style/Theme.Appartamenty"
         tools:targetApi="31">
         <activity
+            android:name=".SignInScreen"
+            android:exported="false"
+            android:label="@string/title_activity_sign_in_screen"
+            android:theme="@style/Theme.Appartamenty" />
+        <activity
             android:name=".SignUpScreen"
             android:exported="true"
             android:label="@string/title_activity_sign_up_screen"

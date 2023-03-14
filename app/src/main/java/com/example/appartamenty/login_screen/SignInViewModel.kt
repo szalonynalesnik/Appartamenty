@@ -1,4 +1,4 @@
-package com.example.appartamenty.signup_screen
+package com.example.appartamenty.login_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,24 +11,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class SignInViewModel @Inject constructor(
     private val repository: AuthRepository
 ): ViewModel() {
 
-    val _signUpState = Channel<SignUpState>()
-    val signUpState = _signUpState.receiveAsFlow()
+    val _signInState = Channel<SignInState>()
+    val signInState = _signInState.receiveAsFlow()
 
-    fun registerUser(email: String, password:String) = viewModelScope.launch{
-        repository.registerUser(email, password).collect{result ->
+    fun loginUser(email: String, password:String) = viewModelScope.launch{
+        repository.loginUser(email, password).collect{result ->
             when(result){
                 is Resource.Success -> {
-                    _signUpState.send(SignUpState(isSuccess = "Register successful"))
+                    _signInState.send(SignInState(isSuccess = "Login successful"))
                 }
                 is Resource.Loading -> {
-                    _signUpState.send(SignUpState(isLoading = true))
+                    _signInState.send(SignInState(isLoading = true))
                 }
                 is Resource.Error -> {
-                    _signUpState.send(SignUpState(isError = result.message))
+                    _signInState.send(SignInState(isError = result.message))
                 }
             }
         }

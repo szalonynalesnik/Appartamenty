@@ -31,12 +31,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.R
 import com.example.appartamenty.ui.theme.AppartamentyTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginFormActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         setContent {
             AppartamentyTheme {
+                val appState = rememberAppState()
+
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -213,6 +220,31 @@ fun logged(email: String, password: String, context: Context) {
     } else {
         Toast.makeText(context, "Couldn't log in", Toast.LENGTH_SHORT).show()
     }
+}
+
+@Composable
+fun LoginScreen(popUpScreen: () -> Unit, viewModel: LoginViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState
+
+    BasicToolbar(AppText.login_details)
+
+    Column([...]) {
+        EmailField(uiState.email, viewModel::onEmailChange, Modifier.fieldModifier())
+
+        [...]
+    }
+}
+
+@Composable
+fun EmailField(value: String,  onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
+    OutlinedTextField(
+        singleLine = true,
+        modifier = modifier,
+        value = value,
+        onValueChange = { onNewValue(it) },
+        placeholder = { Text(stringResource(AppText.email)) },
+        leadingIcon = { [...] }
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

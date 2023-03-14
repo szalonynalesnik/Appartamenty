@@ -1,4 +1,4 @@
-package com.example.appartamenty.signup_screen
+package com.example.appartamenty.login_screen
 
 import android.widget.Toast
 import com.example.appartamenty.R
@@ -12,25 +12,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val state = viewModel.signUpState.collectAsState(initial = null)
+    val state = viewModel.signInState.collectAsState(initial = null)
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -104,9 +102,9 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
         )
         Button(
             onClick = {
-              scope.launch{
-                  viewModel.registerUser(email, password)
-              }
+                scope.launch{
+                    viewModel.loginUser(email, password)
+                }
             },
             modifier = Modifier
                 .padding(top = 24.dp)
