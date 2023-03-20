@@ -18,16 +18,16 @@ import androidx.compose.ui.unit.dp
 
 class ReusableTextFields {
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomOuLinedTextField(
+fun CustomOutlinedTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = "",
     leadingIconImageVector: ImageVector,
     leadingIconDescription: String = "",
     isPasswordField: Boolean = false,
+    singleLine: Boolean = true,
     isPasswordVisible: Boolean = false,
     onVisibilityChange: (Boolean) -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -39,13 +39,13 @@ fun CustomOuLinedTextField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         OutlinedTextField(
             value = value,
-            onValueChange = { onValueChange { it }.toString() },
+            onValueChange = { onValueChange(it)},
             label = { Text(label) },
             leadingIcon = {
                 Icon(
@@ -80,7 +80,7 @@ fun CustomOuLinedTextField(
             },
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            singleLine = true,
+            singleLine = singleLine,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)

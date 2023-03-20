@@ -65,7 +65,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".RegisterFormActivity"
+            android:name="com.example.appartamenty.signup_screen.RegisterFormActivity"
             android:exported="false"
             android:label="@string/title_activity_register_form"
             android:theme="@style/Theme.Appartamenty">
