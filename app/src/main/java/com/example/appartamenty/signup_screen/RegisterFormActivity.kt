@@ -115,7 +115,6 @@ fun RegisterWelcome(context: Context) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterForm(context: Context) {
-    val appState = rememberAppState()
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }

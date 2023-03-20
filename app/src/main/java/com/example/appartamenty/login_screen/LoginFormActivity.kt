@@ -2,11 +2,13 @@ package com.example.appartamenty.login_screen
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -18,12 +20,15 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -42,8 +47,6 @@ class LoginFormActivity : ComponentActivity() {
         auth = Firebase.auth
         setContent {
             AppartamentyTheme {
-                val appState = rememberAppState()
-
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -117,8 +120,18 @@ fun LoginWelcome(context: Context) {
 @Composable
 fun LoginForm(context: Context) {
     var email by remember { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+
+    val isEmailValid by derivedStateOf {
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    val isPasswordValid by derivedStateOf {
+        password.length > 7
+    }
+
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
@@ -150,6 +163,14 @@ fun LoginForm(context: Context) {
             },
             modifier = Modifier
                 .fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            ),
+            isError = isEmailValid
         )
         OutlinedTextField(
             value = password,
@@ -174,19 +195,26 @@ fun LoginForm(context: Context) {
                 )
             },
             trailingIcon = {
-                val image = if (passwordVisible)
+                val image = if (isPasswordVisible)
                     Icons.Default.Visibility
                 else
                     Icons.Default.VisibilityOff
-                val description = if (passwordVisible) "Hide password" else "Show password"
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                val description = if (isPasswordVisible) "Hide password" else "Show password"
+                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(imageVector = image, description)
                 }
             },
             modifier = Modifier
                 .fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.clearFocus() }
+            ),
+            isError = isPasswordValid
 
         )
         Button(
@@ -196,15 +224,15 @@ fun LoginForm(context: Context) {
             modifier = Modifier
                 .padding(top = 24.dp)
                 .width(intrinsicSize = IntrinsicSize.Max),
+            enabled = isEmailValid && isPasswordValid
         ) {
             Text(
+                text = stringResource(R.string.loginbutton),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = stringResource(R.string.loginbutton),
                 textAlign = TextAlign.Center
             )
-
         }
     }
 }
@@ -220,31 +248,6 @@ fun logged(email: String, password: String, context: Context) {
     } else {
         Toast.makeText(context, "Couldn't log in", Toast.LENGTH_SHORT).show()
     }
-}
-
-@Composable
-fun LoginScreen(popUpScreen: () -> Unit, viewModel: LoginViewModel = hiltViewModel()) {
-    val uiState by viewModel.uiState
-
-    BasicToolbar(AppText.login_details)
-
-    Column([...]) {
-        EmailField(uiState.email, viewModel::onEmailChange, Modifier.fieldModifier())
-
-        [...]
-    }
-}
-
-@Composable
-fun EmailField(value: String,  onNewValue: (String) -> Unit, modifier: Modifier = Modifier) {
-    OutlinedTextField(
-        singleLine = true,
-        modifier = modifier,
-        value = value,
-        onValueChange = { onNewValue(it) },
-        placeholder = { Text(stringResource(AppText.email)) },
-        leadingIcon = { [...] }
-    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
