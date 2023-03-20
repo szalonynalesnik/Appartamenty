@@ -23,6 +23,8 @@
     <string name="enterfirstname">Enter your first name...</string>
     <string name="firstname">First name</string>
     <string name="registerbutton">Register</string>
+    <string name="haveanaccount">"Have an account already? Log in"</string>
+    <string name="donthaveanaccount">"Don't have an account yet? Register"</string>
     <string name="title_activity_main_screen_landlord">MainScreenLandlordActivity</string>
     <string name="contact_tenants">Contact tenants</string>
     <string name="faultr_reports">Fault reports</string>
@@ -32,7 +34,7 @@
     <string name="title_activity_main_screen_tenant">MainScreenTenantActivity</string>
     <string name="report_fault">Report a fault</string>
     <string name="contact_landlord">Contact the landlord</string>
-    <string name="title_activity_tenant_add_real_estate">TenantAddRealEstate</string>
+    <string name="title_activity_landlord_add_real_estate">LandlordAddRealEstate</string>
     <string name="title_activity_tenant_add_readings">TenantAddReadingsActivity</string>
     <string name="title_activity_sign_up_screen">SignUpScreen</string>
     <string name="title_activity_sign_in_screen">SignInScreen</string>

@@ -1,6 +1,7 @@
 package com.example.appartamenty.signup_screen
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -305,6 +306,24 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
                 text = stringResource(R.string.registerbutton),
+                textAlign = TextAlign.Center
+            )
+
+        }
+        OutlinedButton(
+            onClick = {
+                context.startActivity(Intent(context, MainActivity::class.java))
+            },
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .width(intrinsicSize = IntrinsicSize.Max),
+            enabled = true,
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                text = stringResource(R.string.haveanaccount),
                 textAlign = TextAlign.Center
             )
 

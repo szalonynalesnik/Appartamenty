@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -50,7 +51,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     companion object {
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginScreen(auth)
+                    MainScreen(auth)
                 }
             }
         }
@@ -224,7 +224,7 @@ fun LoginScreen(auth: FirebaseAuth) {
                           }
             },
             modifier = Modifier
-                .padding(top = 24.dp)
+                .padding(top = 10.dp)
                 .width(intrinsicSize = IntrinsicSize.Max),
             enabled = isEmailValid && isPasswordValid
         ) {
@@ -241,7 +241,7 @@ fun LoginScreen(auth: FirebaseAuth) {
                 context.startActivity(Intent(context, RegisterFormActivity::class.java))
             },
             modifier = Modifier
-                .padding(top = 24.dp)
+                .padding(top = 10.dp)
                 .width(intrinsicSize = IntrinsicSize.Max),
             enabled = true,
         ) {
@@ -249,7 +249,7 @@ fun LoginScreen(auth: FirebaseAuth) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = "Don't have an account yet? \nClick here to register",
+                text = stringResource(R.string.donthaveanaccount),
                 textAlign = TextAlign.Center
             )
 
