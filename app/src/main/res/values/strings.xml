@@ -33,4 +33,8 @@
     <string name="postcode">Postal code</string>
     <string name="city">City</string>
     <string name="confirm">Confirm and save</string>
+    <string name="electricity">Electricity [PLN/kWh]</string>
+    <string name="gas">Natural gas</string>
+    <string name="internet" translatable="false">Internet</string>
+    <string name="water">Water</string>
 </resources>
