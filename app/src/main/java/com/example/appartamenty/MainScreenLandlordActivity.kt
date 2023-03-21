@@ -1,6 +1,7 @@
 package com.example.appartamenty
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -86,6 +87,7 @@ fun AppLogo() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandlordChooser(context: Context) {
     Column(
@@ -102,12 +104,15 @@ fun LandlordChooser(context: Context) {
                     containerColor =  MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
+                onClick = {
+                    context.startActivity(Intent(context, LandlordAddRealEstate::class.java))
+                }
             ) {
                 Column(
                     modifier = Modifier
                         .padding(vertical = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(
                         Icons.Default.Home,

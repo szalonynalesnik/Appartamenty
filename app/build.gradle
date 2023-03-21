@@ -73,6 +73,7 @@ dependencies {
     // Dagger Core
     implementation "com.google.dagger:dagger:2.44"
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.4'
     kapt "com.google.dagger:dagger-compiler:2.44"
 
 // Dagger Android

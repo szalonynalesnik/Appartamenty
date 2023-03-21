@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.MainActivity
+import com.example.appartamenty.MainScreenLandlordActivity
 import com.example.appartamenty.R
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -46,6 +47,7 @@ import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.data.Landlord
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class RegisterFormActivity : ComponentActivity() {
@@ -133,6 +135,7 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
+    var landlord: Landlord
 
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -154,6 +157,7 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         "The password must be at least 8 characters long and include a number."
     var validateEqualPasswordError = "The passwords don't match."
 
+    var database = FirebaseFirestore.getInstance()
 
     fun validateData(
         firstName: String,
@@ -182,13 +186,39 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         confirmPassword: String
     ) {
         if (validateData(firstName, lastName, email, password, confirmPassword)) {
+
+            auth.createUserWithEmailAndPassword(email, password)
+            var landlordId = auth.currentUser?.uid
+            landlord = Landlord(firstName, lastName, email)
+            if (landlordId != null) {
+                val handle = database.collection("landlords").document(landlordId).set(landlord)
+                handle.addOnSuccessListener {
+                    Log.d(
+                        MainActivity::class.java.simpleName,
+                        "Adding to database successful"
+                    )
+                }
+                context.startActivity(Intent(context, MainScreenLandlordActivity::class.java))
+                handle.addOnFailureListener {
+                    Log.d(
+                        MainActivity::class.java.simpleName,
+                        "Adding to database failed"
+                    )
+                }
+            }
+            //
+
             Log.d(
                 MainActivity::class.java.simpleName,
                 "First name: $firstName, Last name: $lastName, Email: $email, Password: $password"
             )
-            auth.createUserWithEmailAndPassword(email, password)
+
         } else {
-            Toast.makeText(context, "Please review the registration fields.", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                context.getString(R.string.reviewformfields),
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -196,7 +226,7 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-        .verticalScroll(scrollState),
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -287,15 +317,6 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         Button(
             onClick = {
                 register(firstName, lastName, email, password, confirmPassword)
-
-//                    .addOnCompleteListener {
-//                    if (it.isSuccessful) {
-//                        val databaseRef =
-//                            database.reference.child("Landlords").child(auth.currentUser || . uid)
-//                        val landlord: Landlord =
-//                            Landlord(auth.currentUser || .uid, firstName, lastName, email)
-//                    }
-//                }
             },
             modifier = Modifier
                 .padding(top = 24.dp)
@@ -332,186 +353,9 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
 }
 
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun RegisterForm(context: Context) {
-//    var email by remember { mutableStateOf("") }
-//    var firstName by remember { mutableStateOf("") }
-//    var lastName by remember { mutableStateOf("") }
-//    var password by rememberSaveable { mutableStateOf("") }
-//    var passwordVisible by rememberSaveable { mutableStateOf(false) }
-//    var confirmPassword by rememberSaveable { mutableStateOf("") }
-//    var confirmPasswordVisible by rememberSaveable { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
-//    ) {
-//        OutlinedTextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.emailaddress),
-//                )
-//            },
-//            placeholder = {
-//                Text(
-//                    text = stringResource(R.string.enteremail),
-//                    style = MaterialTheme.typography.bodySmall,
-//                )
-//
-//            },
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Default.Email,
-//                    contentDescription = "email"
-//                )
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//        )
-//        OutlinedTextField(
-//            value = firstName,
-//            onValueChange = { firstName = it },
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.firstname),
-//                )
-//            },
-//            placeholder = {
-//                Text(
-//                    text = stringResource(R.string.enterfirstname),
-//                    style = MaterialTheme.typography.bodySmall
-//                )
-//
-//            },
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Default.Person,
-//                    contentDescription = "first name"
-//                )
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//        )
-//        OutlinedTextField(
-//            value = lastName,
-//            onValueChange = { lastName = it },
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.lastname),
-//                )
-//            },
-//            placeholder = {
-//                Text(
-//                    text = stringResource(R.string.enterlastname),
-//                    style = MaterialTheme.typography.bodySmall
-//                )
-//
-//            },
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Default.Person,
-//                    contentDescription = "last name"
-//                )
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//        )
-//        OutlinedTextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.password)
-//                )
-//            },
-//            singleLine = true,
-//            placeholder = {
-//                Text(
-//                    text = stringResource(R.string.enterpassword),
-//                    style = MaterialTheme.typography.bodySmall
-//                )
-//
-//            },
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Default.Lock,
-//                    contentDescription = "lock"
-//                )
-//            },
-//            trailingIcon = {
-//                val image = if (passwordVisible)
-//                    Icons.Default.Visibility
-//                else
-//                    Icons.Default.VisibilityOff
-//                val description = if (passwordVisible) "Hide password" else "Show password"
-//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-//                    Icon(imageVector = image, description)
-//                }
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-//
-//        )
-//        OutlinedTextField(
-//            value = confirmPassword,
-//            onValueChange = { confirmPassword = it },
-//            label = {
-//                Text(
-//                    text = stringResource(R.string.confirmpassword)
-//                )
-//            },
-//            placeholder = {
-//                Text(
-//                    text = "Confirm your password...",
-//                    style = MaterialTheme.typography.bodySmall
-//                )
-//
-//            },
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Default.Lock,
-//                    contentDescription = "lock"
-//                )
-//            },
-//            singleLine = true,
-//            trailingIcon = {
-//                val image = if (confirmPasswordVisible)
-//                    Icons.Default.Visibility
-//                else
-//                    Icons.Default.VisibilityOff
-//                val description = if (confirmPasswordVisible) "Hide password" else "Show password"
-//                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-//                    Icon(imageVector = image, description)
-//                }
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-//
-//        )
-//
-//    }
-//}
-
-//@Composable
-//fun RegisterButton(email: String, password: String, context: Context) {
-//
-//}
-
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun RegisterPreview() {
-    val context = LocalContext.current
     AppartamentyTheme {
         RegisterScreen(Firebase.auth, Firebase.database)
     }

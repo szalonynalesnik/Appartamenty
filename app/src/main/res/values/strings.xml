@@ -1,41 +1,36 @@
 <resources>
     <string name="app_name">APPartamenty</string>
-    <string name="happy_birthday_text">Happy Birthday, Sam!</string>
-    <string name="signature_text">- from Emma</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_register_form">RegisterFormActivity</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="title_activity_register_form" translatable="false">RegisterFormActivity</string>
     <string name="emailaddress">E-mail address</string>
-    <string name="enteremail">Enter your e-mail address...</string>
     <string name="password">Password</string>
-    <string name="enterpassword">Enter your password...</string>
     <string name="loginbutton">Login</string>
     <string name="confirmpassword">Confirm password</string>
-    <string name="enterlastname">Enter your last name...</string>
     <string name="lastname">Last name</string>
-    <string name="enterfirstname">Enter your first name...</string>
     <string name="firstname">First name</string>
     <string name="registerbutton">Register</string>
     <string name="haveanaccount">"Have an account already? Log in"</string>
     <string name="donthaveanaccount">"Don't have an account yet? Register"</string>
-    <string name="title_activity_main_screen_landlord">MainScreenLandlordActivity</string>
-    <string name="contact_tenants">Contact tenants</string>
-    <string name="faultr_reports">Fault reports</string>
-    <string name="calendar">Calendar</string>
-    <string name="utility_meter_readings">Utility meter readings</string>
+    <string name="title_activity_main_screen_landlord" translatable="false">MainScreenLandlordActivity</string>
+    <string name="contact_tenants" translatable="false">Contact tenants</string>
+    <string name="faultr_reports" translatable="false">Fault reports</string>
+    <string name="calendar" translatable="false">Calendar</string>
+    <string name="utility_meter_readings" translatable="false">Utility meter readings</string>
     <string name="manage_properties">Manage properties</string>
-    <string name="title_activity_main_screen_tenant">MainScreenTenantActivity</string>
-    <string name="report_fault">Report a fault</string>
-    <string name="contact_landlord">Contact the landlord</string>
-    <string name="title_activity_landlord_add_real_estate">LandlordAddRealEstate</string>
-    <string name="title_activity_tenant_add_readings">TenantAddReadingsActivity</string>
-    <string name="title_activity_sign_up_screen">SignUpScreen</string>
-    <string name="title_activity_sign_in_screen">SignInScreen</string>
+    <string name="title_activity_main_screen_tenant" translatable="false">MainScreenTenantActivity</string>
+    <string name="report_fault" translatable="false">Report a fault</string>
+    <string name="contact_landlord" translatable="false">Contact the landlord</string>
+    <string name="title_activity_landlord_add_real_estate" translatable="false">LandlordAddRealEstate</string>
+    <string name="title_activity_tenant_add_readings" translatable="false">TenantAddReadingsActivity</string>
+    <string name="reviewformfields">Please review the registration fields</string>
+    <string name="prompt_password">Password</string>
+    <string name="enteremail">Enter email address</string>
+    <string name="enterpassword">Enter password</string>
+    <string name="address">Address</string>
+    <string name="street">Street</string>
+    <string name="houseno">House no.</string>
+    <string name="aptno">Apartment no.</string>
+    <string name="postcode">Postal code</string>
+    <string name="city">City</string>
+    <string name="confirm">Confirm and save</string>
 </resources>
