@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.data.Property
+import com.example.appartamenty.data.Utility
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -36,13 +37,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import java.util.Objects
 
 class LandlordAddRealEstate : ComponentActivity() {
     private val auth by lazy {
         Firebase.auth
     }
     private val database by lazy {
-        Firebase.database
+        FirebaseFirestore.getInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,7 @@ class LandlordAddRealEstate : ComponentActivity() {
 }
 
 @Composable
-fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, database: FirebaseDatabase) {
+fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, database: FirebaseFirestore) {
 
     Column(
         modifier = Modifier
@@ -74,180 +76,14 @@ fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, database: FirebaseDataba
     }
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun UtilityChooser() {
-//
-//    var text by remember { mutableStateOf(TextFieldValue("")) }
-//
-//    val electricityCheckedState = remember { mutableStateOf(false) }
-//    val gasCheckedState = remember { mutableStateOf(false) }
-//    val waterCheckedState = remember { mutableStateOf(false) }
-//    val internetCheckedState = remember { mutableStateOf(false) }
-//
-//
-//    Column(
-//        modifier = Modifier
-//            .padding(vertical = 16.dp, horizontal = 16.dp),
-//    ) {
-//        Text(
-//            text = "Utilities",
-//            style = MaterialTheme.typography.titleLarge,
-//            color = MaterialTheme.colorScheme.onBackground,
-//            fontWeight = FontWeight.Normal,
-//            modifier = Modifier
-//                .padding(bottom = 8.dp)
-//                .align(Alignment.Start)
-//        )
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(vertical = 8.dp)
-//                    .width(intrinsicSize = IntrinsicSize.Max),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Switch(
-//                    checked = electricityCheckedState.value,
-//                    onCheckedChange = { electricityCheckedState.value = it },
-//                    modifier = Modifier
-//
-//                )
-//                Text(
-//                    text = "Electricity",
-//                    style = MaterialTheme.typography.labelLarge,
-//                    color = MaterialTheme.colorScheme.onBackground,
-//                    fontWeight = FontWeight.Normal,
-//                    modifier = Modifier
-//                )
-//            }
-//            if (electricityCheckedState.value == true) {
-//                ValueField(label = "Price [PLN/kWh]", placeholder = "Enter value")
-//            }
-//        }
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(vertical = 8.dp),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Switch(
-//                    checked = gasCheckedState.value,
-//                    onCheckedChange = { gasCheckedState.value = it },
-//                    modifier = Modifier
-//                )
-//                Text(
-//                    text = "Gas",
-//                    style = MaterialTheme.typography.labelLarge,
-//                    color = MaterialTheme.colorScheme.onBackground,
-//                    fontWeight = FontWeight.Normal,
-//                    modifier = Modifier,
-//                )
-//            }
-//
-//            if (gasCheckedState.value) {
-//                ValueField(label = "Price [PLN/m3]", placeholder = "Enter value")
-//            }
-//        }
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(vertical = 8.dp),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Switch(
-//                    checked = waterCheckedState.value,
-//                    onCheckedChange = { waterCheckedState.value = it }
-//                )
-//                Text(
-//                    text = "Water",
-//                    style = MaterialTheme.typography.labelLarge,
-//                    color = MaterialTheme.colorScheme.onBackground,
-//                    fontWeight = FontWeight.Normal,
-//                    modifier = Modifier
-//                        .padding(start = 8.dp),
-//                )
-//            }
-//
-//            if (waterCheckedState.value) {
-//                ValueField(label = "Price [PLN/m3]", placeholder = "Enter value")
-//            }
-//        }
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(vertical = 8.dp),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Switch(
-//                    checked = internetCheckedState.value,
-//                    onCheckedChange = { internetCheckedState.value = it }
-//                )
-//                Text(
-//                    text = "Internet",
-//                    style = MaterialTheme.typography.labelLarge,
-//                    color = MaterialTheme.colorScheme.onBackground,
-//                    fontWeight = FontWeight.Normal,
-//                    modifier = Modifier
-//                        .padding(start = 8.dp),
-//                )
-//            }
-//            if (internetCheckedState.value) {
-//                ValueField(label = "Price [monthly]", placeholder = "Enter value")
-//            }
-//        }
-//    }
-//}
-
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ValueField(label: String, placeholder: String) {
-//
-//    var text by remember { mutableStateOf(TextFieldValue("")) }
-//
-//    TextField(
-//        value = text,
-//        onValueChange = { text = it },
-//        label = { Text(label) },
-//        placeholder = { Text(placeholder) },
-//        modifier = Modifier
-//            .padding(start = 16.dp),
-//    )
-//}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddressForm(auth: FirebaseAuth, database: FirebaseDatabase) {
+fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    var database = FirebaseFirestore.getInstance()
 
     var street by remember { mutableStateOf("") }
     var houseNo by remember { mutableStateOf("") }
@@ -268,210 +104,255 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         houseNo: String,
         postalCode: String,
         city: String,
-    ) {
-        var landlordId = auth.currentUser?.uid
+    ){
+        val landlordId = auth.currentUser?.uid
         property = Property(street, streetNo, houseNo, postalCode, city, landlordId.toString())
         if (landlordId != null) {
-            val handle = database.collection("properties").document().set(property)
-            handle.addOnSuccessListener {
+            var newProperty = database.collection("properties").add(property)
+            newProperty.addOnSuccessListener {
                 Log.d(
                     MainActivity::class.java.simpleName,
-                    "Adding to database successful"
+                    "Adding property to database successful"
                 )
             }
+
         }
+
     }
 
-    Column(
-        modifier = Modifier
-            .padding(vertical = 16.dp, horizontal = 16.dp)
-            .fillMaxWidth()
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.Start,
+    fun addUtility(
+        constant: Boolean,
+        name: String,
+        price: Number
     ) {
-        Text(
-            text = stringResource(R.string.address),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .align(Alignment.Start)
-        )
+        val landlordId = auth.currentUser?.uid.toString()
+        var property = database.collection("properties").whereEqualTo("landlordId", landlordId).get()
+        property.addOnSuccessListener { documents ->
+            for (document in documents) {
+                var propertyId = document.id
+                val utility = Utility(constant, name, price, propertyId)
+                var newUtility = database.collection("utilities").add(utility)
+                newUtility.addOnSuccessListener {
+                    Log.d(
+                        MainActivity::class.java.simpleName,
+                        "Adding utility to database successful"
+                    )
+                }
+            }
 
-        OutlinedTextField(
-            value = street,
-            label = { Text(text = stringResource(R.string.street)) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            onValueChange = { street = it },
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            OutlinedTextField(
-                value = houseNo,
-                label = { Text(text = stringResource(R.string.houseno)) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                onValueChange = { houseNo = it },
-                modifier = Modifier
-                    .weight(1f)
-            )
-            Spacer(
-                modifier = Modifier
-                    .weight(0.1f)
-            )
-            OutlinedTextField(
-                value = apartmentNo,
-                label = { Text(text = stringResource(R.string.aptno)) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                onValueChange = { apartmentNo = it },
-                modifier = Modifier
-                    .weight(1f)
-            )
         }
-        Row(
+    }
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+                .padding(vertical = 16.dp, horizontal = 16.dp)
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.Start,
         ) {
+            Text(
+                text = stringResource(R.string.address),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+            Text(
+                text = "Address off the property",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+
             OutlinedTextField(
-                value = postalCode,
-                label = { Text(text = stringResource(R.string.postcode)) },
+                value = street,
+                label = { Text(text = stringResource(R.string.street)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                onValueChange = { postalCode = it },
+                onValueChange = { street = it },
                 modifier = Modifier
-                    .weight(1f)
+                    .fillMaxWidth(),
             )
-            Spacer(
+            Row(
                 modifier = Modifier
-                    .weight(0.1f)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                OutlinedTextField(
+                    value = houseNo,
+                    label = { Text(text = stringResource(R.string.houseno)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    onValueChange = { houseNo = it },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.1f)
+                )
+                OutlinedTextField(
+                    value = apartmentNo,
+                    label = { Text(text = stringResource(R.string.aptno)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    onValueChange = { apartmentNo = it },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                OutlinedTextField(
+                    value = postalCode,
+                    label = { Text(text = stringResource(R.string.postcode)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    onValueChange = { postalCode = it },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.1f)
+                )
+                OutlinedTextField(
+                    value = city,
+                    label = { Text(text = stringResource(R.string.city)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    onValueChange = { city = it },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
+
+        }
+        Column(
+            modifier = Modifier
+                .padding(vertical = 16.dp, horizontal = 16.dp),
+        ) {
+            Text(
+                text = "Utilities",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
             )
-            OutlinedTextField(
-                value = city,
-                label = { Text(text = stringResource(R.string.city)) },
+            CustomOutlinedTextField(
+                value = electricityPrice,
+                onValueChange = { electricityPrice = it },
+                label = stringResource(R.string.electricity),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
                 ),
+                singleLine = true,
+                leadingIconImageVector = Icons.Default.ElectricBolt,
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                onValueChange = { city = it },
-                modifier = Modifier
-                    .weight(1f)
+                )
             )
+            CustomOutlinedTextField(
+                value = gasPrice,
+                onValueChange = { gasPrice = it },
+                label = stringResource(R.string.gas),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true,
+                leadingIconImageVector = Icons.Default.PropaneTank,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+            CustomOutlinedTextField(
+                value = waterPrice,
+                onValueChange = { waterPrice = it },
+                label = stringResource(R.string.water),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true,
+                leadingIconImageVector = Icons.Default.WaterDrop,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+            CustomOutlinedTextField(
+                value = internetPrice,
+                onValueChange = { internetPrice = it },
+                label = stringResource(R.string.internet),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                leadingIconImageVector = Icons.Default.Wifi,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+
+        }
+        Button(onClick = {
+            addProperty(street, houseNo, apartmentNo, postalCode, city)
+            if (electricityPrice.toFloat() > 0) {
+                addUtility(false, "Electricity", electricityPrice.toFloat())
+            }
+            if (gasPrice.toFloat() > 0) {
+                addUtility(false, "Gas", gasPrice.toFloat())
+            }
+            if (waterPrice.toFloat() > 0) {
+                addUtility(false, "Water", waterPrice.toFloat())
+            }
+            if (internetPrice.toFloat() > 0) {
+                addUtility(true, "Internet", internetPrice.toFloat())
+            }
+        }, shape = RoundedCornerShape(20.dp)) {
+            Text(text = stringResource(R.string.confirm))
         }
 
     }
-    Column(
-        modifier = Modifier
-            .padding(vertical = 16.dp, horizontal = 16.dp),
-    ) {
-        Text(
-            text = "Utilities",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-                .align(Alignment.Start)
-        )
-        CustomOutlinedTextField(
-            value = electricityPrice,
-            onValueChange = { electricityPrice = it },
-            label = stringResource(R.string.electricity),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            leadingIconImageVector = Icons.Default.ElectricBolt,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-        CustomOutlinedTextField(
-            value = gasPrice,
-            onValueChange = { gasPrice = it },
-            label = stringResource(R.string.gas),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            leadingIconImageVector = Icons.Default.PropaneTank,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-        CustomOutlinedTextField(
-            value = waterPrice,
-            onValueChange = { waterPrice = it },
-            label = stringResource(R.string.water),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            leadingIconImageVector = Icons.Default.WaterDrop,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-        CustomOutlinedTextField(
-            value = internetPrice,
-            onValueChange = { internetPrice = it },
-            label = stringResource(R.string.internet),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true,
-            leadingIconImageVector = Icons.Default.Wifi,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
 
+
+    @Preview(showBackground = true, showSystemUi = true)
+    @Composable
+    fun LandlordAddRealEstatePreview() {
+        com.example.appartamenty.ui.theme.AppartamentyTheme {
+            LandlordAddRealEstateMainScreen(Firebase.auth, FirebaseFirestore.getInstance())
+        }
     }
-    Button(onClick = {
-                     addProperty(street, houseNo, apartmentNo, postalCode, city)
-    }, shape = RoundedCornerShape(20.dp)) {
-        Text(text = stringResource(R.string.confirm))
-    }
-
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun LandlordAddRealEstatePreview() {
-    com.example.appartamenty.ui.theme.AppartamentyTheme {
-        LandlordAddRealEstateMainScreen(Firebase.auth, Firebase.database)
-    }
-}

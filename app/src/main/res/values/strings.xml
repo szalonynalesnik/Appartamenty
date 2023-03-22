@@ -34,7 +34,7 @@
     <string name="city">City</string>
     <string name="confirm">Confirm and save</string>
     <string name="electricity">Electricity [PLN/kWh]</string>
-    <string name="gas">Natural gas</string>
-    <string name="internet" translatable="false">Internet</string>
-    <string name="water">Water</string>
+    <string name="gas">Natural gas [PLN/m3]</string>
+    <string name="internet">Internet [per month]</string>
+    <string name="water">Water [PLN/m3]</string>
 </resources>

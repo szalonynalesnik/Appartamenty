@@ -23,6 +23,7 @@
     <string name="city">Miasto</string>
     <string name="confirm">Zatwierdź i zapisz</string>
     <string name="electricity">Prąd [zł//kWh]</string>
-    <string name="gas">Gaz ziemny</string>
-    <string name="water">Woda</string>
+    <string name="gas">Gaz ziemny [zł/m3]</string>
+    <string name="internet">Internet [miesięcznie]</string>
+    <string name="water">Woda [zł/m3]</string>
 </resources>

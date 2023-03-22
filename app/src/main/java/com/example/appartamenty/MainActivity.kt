@@ -216,6 +216,7 @@ fun LoginScreen(auth: FirebaseAuth) {
                           .addOnCompleteListener {
                               if (it.isSuccessful){
                                   Log.d(TAG, "The user has logged in successfully.")
+                                  context.startActivity(Intent(context, MainScreenLandlordActivity::class.java))
                               }
                               else{
                                   Log.w(TAG, "The user has logged in successfully.", it.exception)
