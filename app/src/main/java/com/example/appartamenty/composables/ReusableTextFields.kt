@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -103,7 +104,7 @@ fun CustomOutlinedTextField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomValueField(
+fun CustomUtilityField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = "",
@@ -113,23 +114,34 @@ fun CustomValueField(
     showError: Boolean = false,
     errorMessage: String = "",
 ){
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+        )
+        Spacer(
+            modifier = Modifier
+                .weight(0.1f)
+        )
         TextField(
             value = value,
             onValueChange = { onValueChange(it) },
             label = { Text(label) },
             modifier = Modifier
-                .padding(start = 16.dp),
+                .padding(start = 16.dp)
+                .width(250.dp),
+            singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            isError = showError,
         )
         if (showError) {
             Text(

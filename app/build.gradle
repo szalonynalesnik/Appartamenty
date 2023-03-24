@@ -74,6 +74,8 @@ dependencies {
     implementation "com.google.dagger:dagger:2.44"
     implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.4.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     kapt "com.google.dagger:dagger-compiler:2.44"
 
 // Dagger Android

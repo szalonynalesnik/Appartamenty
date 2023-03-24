@@ -26,4 +26,9 @@
     <string name="gas">Gaz ziemny [zł/m3]</string>
     <string name="internet">Internet [miesięcznie]</string>
     <string name="water">Woda [zł/m3]</string>
+    <string name="electricity_reading_label">Prąd</string>
+    <string name="gas_reading_label">Gaz ziemny</string>
+    <string name="water_reading_label">Woda</string>
+    <string name="meter_readings">Wartości czytników</string>
+    <string name="choose_date">Wybierz datę odczytu</string>
 </resources>

@@ -12,7 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Appartamenty"
         tools:targetApi="31">
-
+        <activity
+            android:name=".LandlordAddTenantToProperty"
+            android:exported="false"
+            android:label="@string/title_activity_landlord_add_tenant_to_property"
+            android:theme="@style/Theme.Appartamenty" />
         <activity
             android:name=".TenantAddReadingsActivity"
             android:exported="false"
