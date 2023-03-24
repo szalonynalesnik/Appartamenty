@@ -5,4 +5,5 @@ data class Tenant(
     var lastName: String? = null,
     var email: String? = null,
     var rent: Number? = null,
+    var propertyId: String? = null
 )

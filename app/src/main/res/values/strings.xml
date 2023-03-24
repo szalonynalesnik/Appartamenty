@@ -81,4 +81,7 @@
     <string name="water_reading_label">Water</string>
     <string name="meter_readings">Meter readings</string>
     <string name="choose_date">Choose reading date</string>
+    <string name="rent">Monthly rent</string>
+    <string name="add_tenant">Invite tenant to join</string>
+    <string name="add_tenant_title">Add new tenant to property</string>
 </resources>

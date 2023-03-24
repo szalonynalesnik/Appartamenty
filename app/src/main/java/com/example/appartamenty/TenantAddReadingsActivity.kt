@@ -167,7 +167,7 @@ fun ReadingForm(auth: FirebaseAuth, database: FirebaseFirestore) {
         Text(text = "Readings for date: ${datePicked}")
         Spacer(modifier = Modifier.size(16.dp))
         OutlinedButton(
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = 24.dp),
             onClick = {
                 datePickerDialog.show()
             }) {
@@ -216,7 +216,7 @@ fun ReadingForm(auth: FirebaseAuth, database: FirebaseFirestore) {
             )
         )
         Button(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 24.dp),
             onClick = {
             if (electricityReading.toFloat() > 0) {
                 addReading(datePicked, "Electricity", electricityReading.toFloat())

@@ -134,7 +134,7 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
             database.collection("properties").whereEqualTo("landlordId", landlordId).get()
         property.addOnSuccessListener { documents ->
             for (document in documents) {
-                // find propertyId
+                // get propertyId
                 var propertyId = document.id
                 val utility = Utility(constant, name, price, propertyId)
                 // add new utility to database
