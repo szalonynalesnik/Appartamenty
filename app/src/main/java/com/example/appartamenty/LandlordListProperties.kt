@@ -17,6 +17,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -85,7 +87,6 @@ fun SetData() {
                 // if the snapshot is not empty we are
                 // hiding our progress bar and adding
                 // our data in a list.
-                // loadingPB.setVisibility(View.GONE)
                 val list = queryDocumentSnapshots.documents
                 for (d in list) {
                     // after getting this list we are passing that
@@ -96,18 +97,9 @@ fun SetData() {
                     propertyList.add(c)
 
                 }
-            } else {
-                // if the snapshot is empty we are displaying
-                // a toast message.
-
             }
         }
-        // if we don't get any data or any error
-        // we are displaying a toast message
-        // that we donot get any data
-        .addOnFailureListener {
 
-        }
     // on below line we are calling method to display UI
     ShowLazyList(propertyList)
 
@@ -118,11 +110,19 @@ fun SetData() {
 fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize().padding(vertical = 16.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-
+        Text(
+            text = stringResource(R.string.properties),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .align(Alignment.Start)
+        )
     LazyColumn {
         itemsIndexed(propertyList) { index, item ->
             if (item != null) {
@@ -163,7 +163,7 @@ fun CardItem(property: Property) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, locale = "pl")
 @Composable
 fun DefaultPreview() {
     AppartamentyTheme {

@@ -34,4 +34,5 @@
     <string name="rent">Czynsz miesięczny</string>
     <string name="add_tenant">Zaproś lokatora do dołączenia</string>
     <string name="add_tenant_title">Dodaj nowego lokatora</string>
+    <string name="properties">Nieruchomości</string>
 </resources>

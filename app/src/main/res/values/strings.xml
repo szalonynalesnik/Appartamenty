@@ -84,5 +84,6 @@
     <string name="rent">Monthly rent</string>
     <string name="add_tenant">Invite tenant to join</string>
     <string name="add_tenant_title">Add new tenant to property</string>
-    <string name="title_activity_landlord_list_properties">LandlordListProperties</string>
+    <string name="title_activity_landlord_list_properties" translatable="false">LandlordListProperties</string>
+    <string name="properties">Properties</string>
 </resources>
