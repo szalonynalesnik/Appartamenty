@@ -2,15 +2,12 @@
 package com.example.appartamenty
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -25,16 +22,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -48,8 +42,10 @@ import com.example.appartamenty.signup_screen.RegisterFormActivity
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import dagger.hilt.android.AndroidEntryPoint
+import android.content.Context
+
 
 class MainActivity : ComponentActivity() {
 
@@ -101,6 +97,42 @@ fun MainScreen(auth: FirebaseAuth) {
         LoginWelcome()
         LoginScreen(Firebase.auth)
     }
+}
+
+
+fun checkIfLandlord(context: Context){
+    val userId = Firebase.auth.currentUser?.uid.toString()
+    var isLandlord: Boolean = false
+    // on below line creating variable for freebase database
+    // and database reference.
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    // on below line getting data from our database
+    db.collection("landlords").document(userId).get()
+        .addOnSuccessListener { doc ->
+            if (doc.data != null) {
+                logInUser(context, true)
+                Log.d(TAG, "DocumentSnapshot data: ${doc.data}")
+            } else {
+                logInUser(context, false)
+            }
+        }
+        .addOnFailureListener {
+            Log.d(MainActivity::class.java.simpleName, "Is user a landlord: $isLandlord")
+        }
+}
+
+fun logInUser(context: Context, isLandlord: Boolean){
+
+    if (isLandlord){
+        val intent = Intent(context, MainScreenLandlordActivity::class.java)
+        context.startActivity(intent)
+    }
+    else{
+        val intent = Intent(context, MainScreenTenantActivity::class.java)
+        context.startActivity(intent)
+    }
+
 }
 
 @SuppressLint("UnrememberedMutableState")
@@ -216,10 +248,11 @@ fun LoginScreen(auth: FirebaseAuth) {
                           .addOnCompleteListener {
                               if (it.isSuccessful){
                                   Log.d(TAG, "The user has logged in successfully.")
-                                  context.startActivity(Intent(context, MainScreenLandlordActivity::class.java))
+                                  checkIfLandlord(context)
+
                               }
                               else{
-                                  Log.w(TAG, "The user has logged in successfully.", it.exception)
+                                  Log.w(TAG, "The user has failed to log in.", it.exception)
 
                               }
                           }
@@ -299,48 +332,6 @@ fun LoginWelcome() {
         )
     }
 }
-
-//@Composable
-//fun MainWelcome(context: Context) {
-//    val image = painterResource(R.drawable.applogo)
-//
-//    Column(
-//        modifier = Modifier
-//            .padding(bottom = 24.dp),
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.Center
-//        ) {
-//            Image(
-//                painter = image,
-//                contentDescription = "logo",
-//                contentScale = ContentScale.Fit,
-//                modifier = Modifier
-//                    .size(50.dp)
-//                    .padding(horizontal = 8.dp),
-//                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
-//            )
-//            Text(
-//                text = stringResource(R.string.app_name),
-//                style = MaterialTheme.typography.headlineLarge,
-//                color = MaterialTheme.colorScheme.primary,
-//                fontWeight = FontWeight.Light,
-//                modifier = Modifier,
-//            )
-//        }
-//        Text(
-//            text = "Welcome!",
-//            style = MaterialTheme.typography.bodyLarge,
-//            color = MaterialTheme.colorScheme.onSurface,
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            textAlign = TextAlign.Center
-//        )
-//    }
-//}
 
 
 @Preview(showBackground = true, showSystemUi = true)

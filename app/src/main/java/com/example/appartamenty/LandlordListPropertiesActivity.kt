@@ -57,7 +57,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SetData() {
-    //val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2" //auth.currentUser?.uid.toString()
+    //val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2"
 
     val landlordId = Firebase.auth.currentUser?.uid.toString()
     val propertyList = mutableStateListOf<Property?>()
@@ -152,7 +152,8 @@ fun CardItem(property: Property) {
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
-
+//            val intent = Intent(context, LandlordAddRealEstate::class.java)
+//            context.startActivity(intent)
         }
     ) {
         Column(

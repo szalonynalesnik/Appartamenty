@@ -88,4 +88,5 @@
     <string name="properties">Properties</string>
     <string name="no_properties">You haven\'t added any properties yet.</string>
     <string name="add_property">Add new property</string>
+    <string name="title_activity_navigation">Navigation</string>
 </resources>
