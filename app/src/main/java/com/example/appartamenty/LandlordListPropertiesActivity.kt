@@ -1,22 +1,24 @@
 package com.example.appartamenty
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,9 +29,8 @@ import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
 
-class LandlordListProperties : ComponentActivity() {
+class LandlordListPropertiesActivity : ComponentActivity() {
     private val auth by lazy {
         Firebase.auth
     }
@@ -53,28 +54,16 @@ class LandlordListProperties : ComponentActivity() {
     }
 }
 
-//suspend fun retrievePropertiesSnapshot(): List<Property> {
-//
-//    var properties: List<Property> = mutableListOf()
-//    val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2" //auth.currentUser?.uid.toString()
-//
-//    database.collection("properties").whereEqualTo("landlordId", landlordId).get().await().map {
-//        val result = it.toObject(Property::class.java)
-//        properties += result
-//    }
-//
-//    return properties
-//}
-
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun SetData() {
-    val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2" //auth.currentUser?.uid.toString()
+    //val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2" //auth.currentUser?.uid.toString()
 
-    var propertyList = mutableStateListOf<Property?>()
+    val landlordId = Firebase.auth.currentUser?.uid.toString()
+    val propertyList = mutableStateListOf<Property?>()
     // on below line creating variable for freebase database
     // and database reference.
-    var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     // on below line getting data from our database
     db.collection("properties").whereEqualTo("landlordId", landlordId).get()
@@ -108,9 +97,13 @@ fun SetData() {
 
 @Composable
 fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
+
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
-            .fillMaxSize().padding(vertical = 16.dp, horizontal = 16.dp),
+            .fillMaxSize()
+            .padding(vertical = 16.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -128,8 +121,21 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
             if (item != null) {
                 CardItem(item)
             }
+            else{
+                Text(text = stringResource(R.string.no_properties),)
+            }
         }
     }
+        OutlinedButton(
+            modifier = Modifier.padding(top = 16.dp),
+            onClick = {
+                val intent = Intent(context, LandlordAddRealEstate::class.java)
+                context.startActivity(intent)
+            }) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
+            Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+            Text(text = stringResource(R.string.add_property))
+        }
     }
 }
 
@@ -137,7 +143,9 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
 @Composable
 fun CardItem(property: Property) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = 10.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer

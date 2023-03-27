@@ -1,5 +1,6 @@
 package com.example.appartamenty
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -353,6 +354,16 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
             modifier = Modifier
                 .padding(bottom = 8.dp)
         )
+            OutlinedButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    val intent = Intent(context, LandlordAddTenantToProperty::class.java)
+                    context.startActivity(intent)
+                }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
+                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                Text(text = stringResource(R.string.add_tenant))
+            }
     }
 
     }

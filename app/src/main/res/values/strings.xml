@@ -86,4 +86,6 @@
     <string name="add_tenant_title">Add new tenant to property</string>
     <string name="title_activity_landlord_list_properties" translatable="false">LandlordListProperties</string>
     <string name="properties">Properties</string>
+    <string name="no_properties">You haven\'t added any properties yet.</string>
+    <string name="add_property">Add new property</string>
 </resources>

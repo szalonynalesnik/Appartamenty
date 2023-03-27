@@ -35,4 +35,6 @@
     <string name="add_tenant">Zaproś lokatora do dołączenia</string>
     <string name="add_tenant_title">Dodaj nowego lokatora</string>
     <string name="properties">Nieruchomości</string>
+    <string name="no_properties">Nie dodano jeszcze żadnej nieruchomości.</string>
+    <string name="add_property">Dodaj nową nieruchomość</string>
 </resources>

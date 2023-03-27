@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Appartamenty"
         tools:targetApi="31">
         <activity
-            android:name=".LandlordListProperties"
+            android:name=".LandlordListPropertiesActivity"
             android:exported="false"
             android:label="@string/title_activity_landlord_list_properties"
             android:theme="@style/Theme.Appartamenty" />

@@ -106,7 +106,7 @@ fun LandlordChooser(context: Context) {
                 ),
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
                 onClick = {
-                    var intent = Intent(context, LandlordAddRealEstate::class.java)
+                    var intent = Intent(context, LandlordListPropertiesActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
