@@ -37,7 +37,7 @@ class MainScreenLandlordActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LandlordMainScreen(applicationContext)
+                    LandlordMainScreen(LocalContext.current)
                 }
             }
         }

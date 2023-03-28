@@ -1,6 +1,7 @@
 package com.example.appartamenty
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -57,6 +58,7 @@ fun TenantMainScreen(context: Context) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TenantChooser(context: Context) {
     Column(
@@ -74,11 +76,18 @@ fun TenantChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
-
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                ),
+                onClick = {
+                    var intent = Intent(context, TenantAddReadingsActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                }
             ) {
                 Column(
                     modifier = Modifier
@@ -89,7 +98,7 @@ fun TenantChooser(context: Context) {
                 ) {
                     Icon(
                         Icons.Default.Calculate,
-                        contentDescription = "utility meter readings",
+                        contentDescription = stringResource(R.string.utility_meter_readings),
                         modifier = Modifier
                             .size(48.dp)
                     )
@@ -106,10 +115,13 @@ fun TenantChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -145,11 +157,15 @@ fun TenantChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
-            ) {
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                ),
+
+                ) {
                 Column(
                     modifier = Modifier
                         .padding(vertical = 16.dp)
@@ -176,10 +192,13 @@ fun TenantChooser(context: Context) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -208,7 +227,7 @@ fun TenantChooser(context: Context) {
 
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, locale = "pl")
 @Composable
 fun MainScreenTenantPreview() {
     val context = LocalContext.current

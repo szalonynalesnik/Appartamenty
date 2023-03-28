@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -47,7 +46,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SetData()
+                    SetPropertyData()
                 }
             }
         }
@@ -56,10 +55,10 @@ class LandlordListPropertiesActivity : ComponentActivity() {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SetData() {
-    //val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2"
+fun SetPropertyData() {
 
-    val landlordId = Firebase.auth.currentUser?.uid.toString()
+    val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2"
+        // Firebase.auth.currentUser?.uid.toString()
     val propertyList = mutableStateListOf<Property?>()
     // on below line creating variable for freebase database
     // and database reference.
@@ -81,6 +80,9 @@ fun SetData() {
                     // after getting this list we are passing that
                     // list to our object class.
                     val c: Property? = d.toObject(Property::class.java)
+                    if (c != null) {
+                        c.propertyId = d.id
+                    }
                     // and we will pass this object class inside
                     // our arraylist which we have created for list view.
                     propertyList.add(c)
@@ -106,7 +108,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
             .padding(vertical = 16.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Text(
             text = stringResource(R.string.properties),
             style = MaterialTheme.typography.titleLarge,
@@ -116,16 +118,15 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
                 .padding(bottom = 16.dp)
                 .align(Alignment.Start)
         )
-    LazyColumn {
-        itemsIndexed(propertyList) { index, item ->
-            if (item != null) {
-                CardItem(item)
-            }
-            else{
-                Text(text = stringResource(R.string.no_properties),)
+        LazyColumn {
+            itemsIndexed(propertyList) { index, item ->
+                if (item != null) {
+                    CardItem(item)
+                } else {
+                    Text(text = stringResource(R.string.no_properties))
+                }
             }
         }
-    }
         OutlinedButton(
             modifier = Modifier.padding(top = 16.dp),
             onClick = {
@@ -142,6 +143,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardItem(property: Property) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,8 +154,9 @@ fun CardItem(property: Property) {
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
-//            val intent = Intent(context, LandlordAddRealEstate::class.java)
-//            context.startActivity(intent)
+            val intent = Intent(context, LandlordPropertyDetails::class.java)
+            intent.putExtra("property", property)
+            context.startActivity(intent)
         }
     ) {
         Column(
@@ -176,6 +179,6 @@ fun CardItem(property: Property) {
 @Composable
 fun DefaultPreview() {
     AppartamentyTheme {
-        SetData()
+        SetPropertyData()
     }
 }

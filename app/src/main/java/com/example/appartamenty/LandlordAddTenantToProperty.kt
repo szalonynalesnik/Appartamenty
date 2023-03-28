@@ -113,9 +113,14 @@ fun AddTenantForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         rent: Number,
     ) {
         if (validateData(firstName, lastName, email, rent.toString())) {
-            auth.createUserWithEmailAndPassword(email, "not-set")
-            // get landlord ID
             var landlordId = auth.currentUser?.uid
+            Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Landlord ID: $landlordId")
+            auth.createUserWithEmailAndPassword(email, "not-set")
+            auth.sendPasswordResetEmail(email)
+            // get landlord ID
+            var tenantId = auth.currentUser?.uid
+            Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
+
 
             // find property belonging to landlord
             var property =
