@@ -38,20 +38,17 @@ import com.example.appartamenty.data.Utility
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
 class TenantAddReadingsActivity : ComponentActivity() {
-    private val auth by lazy {
-        Firebase.auth
-    }
-    private val database by lazy {
-        FirebaseFirestore.getInstance()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val tenantId = intent.getStringExtra("tenantId")
+
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -59,7 +56,9 @@ class TenantAddReadingsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TenantAddReadingsScreen(auth, database)
+                    if (tenantId != null) {
+                        TenantAddReadingsScreen(tenantId)
+                    }
                 }
             }
         }
@@ -67,7 +66,7 @@ class TenantAddReadingsActivity : ComponentActivity() {
 }
 
 @Composable
-fun TenantAddReadingsScreen(auth: FirebaseAuth, database: FirebaseFirestore) {
+fun TenantAddReadingsScreen(tenantId: String) {
     Column(
         modifier = Modifier
             .padding(vertical = 16.dp, horizontal = 16.dp)
@@ -85,47 +84,61 @@ fun TenantAddReadingsScreen(auth: FirebaseAuth, database: FirebaseFirestore) {
                 .align(Alignment.Start)
         )
 
-        ReadingForm(auth, database)
+        ReadingForm(tenantId)
 
     }
 }
 
 @Composable
-fun ReadingForm(auth: FirebaseAuth, database: FirebaseFirestore) {
+fun ReadingForm(tenantId: String) {
 
     val context = LocalContext.current
+    val database = FirebaseFirestore.getInstance()
 
     fun addReading(date: String, utilityName: String, value: Number) {
-        val landlordId = auth.currentUser?.uid.toString()
-        // find property assigned to landlord
-        var properties =
-            database.collection("properties").whereEqualTo("landlordId", landlordId).get()
-        properties.addOnSuccessListener { matchingProperties ->
-            for (matchingProperty in matchingProperties) {
-                var propertyId = matchingProperty.id
-                // find matching utility for the property
-                var utilities =
-                    database.collection("utilities").whereEqualTo("propertyId", propertyId)
-                        .whereEqualTo("name", utilityName).get()
-                utilities.addOnSuccessListener { matchingUtilities ->
-                    for (matchingUtility in matchingUtilities) {
-                        var utilityId = matchingUtility.id
-                        val meterReading = MeterReading(date, utilityName, value, utilityId)
-                        // add new meter reading to database
-                        var newMeterReading =
-                            database.collection("meter_readings").add(meterReading)
-                        newMeterReading.addOnSuccessListener {
-                            Log.d(
-                                MainActivity::class.java.simpleName,
-                                "Adding meter reading to database successful"
-                            )
+
+        var tenant = database.collection("tenants").document(tenantId).get()
+        tenant.addOnSuccessListener { doc ->
+            if (!doc.exists()) {
+                var propertyId = doc.get("propertyId")
+                database.collection("utilities").whereEqualTo("propertyId", propertyId)
+                    .whereEqualTo("name", utilityName).get()
+                    .addOnSuccessListener { matchingUtilities ->
+                        for (matchingUtility in matchingUtilities) {
+                            var utilityId = matchingUtility.id
+                            val meterReading = MeterReading(date, utilityName, value, utilityId)
+                            // add new meter reading to database
+                            var newMeterReading =
+                                database.collection("meter_readings").add(meterReading)
+                            newMeterReading.addOnSuccessListener {
+                                Log.d(
+                                    MainActivity::class.java.simpleName,
+                                    "Adding meter reading to database successful"
+                                )
+                            }
+                                .addOnFailureListener {
+                                    Log.d(
+                                        MainActivity::class.java.simpleName,
+                                        "Could not add meter reading to database"
+                                    )
+                                }
                         }
+                    }.addOnFailureListener {
+                        Log.d(
+                            MainActivity::class.java.simpleName,
+                            "Could not find utility"
+                        )
                     }
-                }
-
             }
-
+            }.addOnFailureListener {
+            Log.d(
+                MainActivity::class.java.simpleName,
+                "Could not find tenant"
+            )
         }
+
+
+
     }
 
 
@@ -218,16 +231,17 @@ fun ReadingForm(auth: FirebaseAuth, database: FirebaseFirestore) {
         Button(
             modifier = Modifier.padding(top = 24.dp),
             onClick = {
-            if (electricityReading.toFloat() > 0) {
-                addReading(datePicked, "Electricity", electricityReading.toFloat())
-            }
-            if (gasReading.toFloat() > 0) {
-                addReading(datePicked, "Gas", gasReading.toFloat())
-            }
-            if (waterReading.toFloat() > 0) {
-                addReading(datePicked, "Water", waterReading.toFloat())
-            }
-        }, shape = RoundedCornerShape(20.dp)) {
+                if (electricityReading.toFloat() > 0) {
+                    addReading(datePicked, "Electricity", electricityReading.toFloat())
+                }
+                if (gasReading.toFloat() > 0) {
+                    addReading(datePicked, "Gas", gasReading.toFloat())
+                }
+                if (waterReading.toFloat() > 0) {
+                    addReading(datePicked, "Water", waterReading.toFloat())
+                }
+            }, shape = RoundedCornerShape(20.dp)
+        ) {
             Text(text = stringResource(R.string.confirm))
         }
 
@@ -239,6 +253,6 @@ fun ReadingForm(auth: FirebaseAuth, database: FirebaseFirestore) {
 fun TenantAddReadingsPreview() {
 
     AppartamentyTheme {
-        TenantAddReadingsScreen(Firebase.auth, FirebaseFirestore.getInstance())
+        TenantAddReadingsScreen("xpBXl55uCGmuwFWVxNv7")
     }
 }

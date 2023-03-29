@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.appartamenty.R.string.streetNo
 import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Utility
@@ -49,6 +50,7 @@ class LandlordAddRealEstate : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val landlordId = intent.getStringExtra("landlordId")
         super.onCreate(savedInstanceState)
         setContent {
             AppartamentyTheme {
@@ -57,7 +59,9 @@ class LandlordAddRealEstate : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LandlordAddRealEstateMainScreen(auth, database)
+                    if (landlordId != null) {
+                        LandlordAddRealEstateMainScreen(auth, landlordId)
+                    }
                 }
             }
         }
@@ -65,7 +69,7 @@ class LandlordAddRealEstate : ComponentActivity() {
 }
 
 @Composable
-fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, database: FirebaseFirestore) {
+fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, landlordId: String) {
 
     val scrollState = rememberScrollState()
 
@@ -76,20 +80,20 @@ fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, database: FirebaseFirest
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AddressForm(auth, database)
+        AddressForm(auth, landlordId)
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
+fun AddressForm(auth: FirebaseAuth, landlordId: String) {
 
-    val context = LocalContext.current
+    val database = FirebaseFirestore.getInstance()
     val focusManager = LocalFocusManager.current
 
     var street by remember { mutableStateOf("") }
-    var houseNo by remember { mutableStateOf("") }
+    var streetNo by remember { mutableStateOf("") }
     var apartmentNo by remember { mutableStateOf("") }
     var postalCode by rememberSaveable { mutableStateOf("") }
     var city by rememberSaveable { mutableStateOf("") }
@@ -104,36 +108,36 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
     fun addProperty(
         street: String,
         streetNo: String,
-        houseNo: String,
+        apartmentNo: String,
         postalCode: String,
         city: String,
     ) {
-        val landlordId = auth.currentUser?.uid
-        property = Property(street, streetNo, houseNo, postalCode, city, landlordId.toString())
-        if (landlordId != null) {
+        property = Property(street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode, city = city, landlordId = landlordId)
             // add new property belonging to landlord to the database
             var newProperty = database.collection("properties").add(property)
-            newProperty.addOnSuccessListener {
+            newProperty.addOnSuccessListener { doc ->
                 Log.d(
                     MainActivity::class.java.simpleName,
                     "Adding property to database successful"
                 )
             }
-
         }
 
-    }
+
 
     fun addUtility(
         constant: Boolean,
         name: String,
-        price: Number
+        price: Number,
+        street: String,
+        streetNo: String,
+        apartmentNo: String,
+        postalCode: String,
     ) {
-        val landlordId = auth.currentUser?.uid.toString()
         // find property belonging to landlord
-        var property =
-            database.collection("properties").whereEqualTo("landlordId", landlordId).get()
-        property.addOnSuccessListener { documents ->
+        var queriedProperty =
+            database.collection("properties").whereEqualTo("landlordId", landlordId).whereEqualTo("street", street).whereEqualTo("streetNo",streetNo).whereEqualTo("apartmentNo", apartmentNo).whereEqualTo("postalCode",postalCode).get()
+        queriedProperty.addOnSuccessListener { documents ->
             for (document in documents) {
                 // get propertyId
                 var propertyId = document.id
@@ -192,8 +196,8 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
             horizontalArrangement = Arrangement.Center
         ) {
             OutlinedTextField(
-                value = houseNo,
-                label = { Text(text = stringResource(R.string.houseno)) },
+                value = streetNo,
+                label = { Text(text = stringResource(R.string.streetNo)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
@@ -201,7 +205,7 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 ),
-                onValueChange = { houseNo = it },
+                onValueChange = { streetNo = it },
                 modifier = Modifier
                     .weight(1f)
             )
@@ -342,45 +346,23 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             )
         )
-        Column(
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-        ) {
-        Text(
-            text = "Tenants",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier
-                .padding(bottom = 8.dp)
-        )
-            OutlinedButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    val intent = Intent(context, LandlordAddTenantToProperty::class.java)
-                    context.startActivity(intent)
-                }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = stringResource(R.string.add_tenant))
-            }
-    }
+
 
     }
 
     Button(onClick = {
-        addProperty(street, houseNo, apartmentNo, postalCode, city)
+        addProperty(street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode, city = city)
         if (electricityPrice.toFloat() > 0) {
-            addUtility(false, "Electricity", electricityPrice.toFloat())
+            addUtility(constant = false, name = "Electricity", price = electricityPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
         if (gasPrice.toFloat() > 0) {
-            addUtility(false, "Gas", gasPrice.toFloat())
+            addUtility(constant = false, name = "Gas", price = gasPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
         if (waterPrice.toFloat() > 0) {
-            addUtility(false, "Water", waterPrice.toFloat())
+            addUtility(constant = false, name = "Water", price = waterPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
         if (internetPrice.toFloat() > 0) {
-            addUtility(true, "Internet", internetPrice.toFloat())
+            addUtility(constant = true, name = "Internet", price = internetPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
     }, shape = RoundedCornerShape(20.dp)) {
         Text(text = stringResource(R.string.confirm))
@@ -393,6 +375,6 @@ fun AddressForm(auth: FirebaseAuth, database: FirebaseFirestore) {
 @Composable
 fun LandlordAddRealEstatePreview() {
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        LandlordAddRealEstateMainScreen(Firebase.auth, FirebaseFirestore.getInstance())
+        LandlordAddRealEstateMainScreen(Firebase.auth, landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2")
     }
 }

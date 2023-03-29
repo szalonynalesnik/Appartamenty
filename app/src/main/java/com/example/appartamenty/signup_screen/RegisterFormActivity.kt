@@ -186,9 +186,16 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         confirmPassword: String
     ) {
         if (validateData(firstName, lastName, email, password, confirmPassword)) {
-
+            Log.d(
+                MainActivity::class.java.simpleName,
+                "User ID: ${auth.currentUser?.uid}"
+            )
             auth.createUserWithEmailAndPassword(email, password)
             var landlordId = auth.currentUser?.uid
+            Log.d(
+                MainActivity::class.java.simpleName,
+                "User ID: ${landlordId}"
+            )
             landlord = Landlord(firstName, lastName, email)
             if (landlordId != null) {
                 val handle = database.collection("landlords").document(landlordId).set(landlord)
@@ -198,7 +205,9 @@ fun ShowForm(auth: FirebaseAuth, database: FirebaseDatabase) {
                         "Adding to database successful"
                     )
                 }
-                context.startActivity(Intent(context, MainScreenLandlordActivity::class.java))
+                val intent = Intent(context, MainScreenLandlordActivity::class.java)
+                intent.putExtra("landlordId", landlordId)
+                context.startActivity(intent)
                 handle.addOnFailureListener {
                     Log.d(
                         MainActivity::class.java.simpleName,

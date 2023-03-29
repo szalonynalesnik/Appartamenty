@@ -30,6 +30,7 @@ import com.example.appartamenty.R
 class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val tenantId = intent.getStringExtra("tenantId")
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -37,7 +38,9 @@ class MainScreenTenantActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TenantMainScreen(applicationContext)
+                    if (tenantId != null) {
+                        TenantMainScreen(applicationContext, tenantId)
+                    }
                 }
             }
         }
@@ -45,7 +48,7 @@ class MainScreenTenantActivity : ComponentActivity() {
 }
 
 @Composable
-fun TenantMainScreen(context: Context) {
+fun TenantMainScreen(context: Context, tenantId: String) {
 
     Column(
         modifier = Modifier
@@ -54,13 +57,13 @@ fun TenantMainScreen(context: Context) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppLogo()
-        TenantChooser(context)
+        TenantChooser(context, tenantId)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TenantChooser(context: Context) {
+fun TenantChooser(context: Context, tenantId: String) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -85,6 +88,7 @@ fun TenantChooser(context: Context) {
                 ),
                 onClick = {
                     var intent = Intent(context, TenantAddReadingsActivity::class.java)
+                    intent.putExtra("tenantId", tenantId)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
@@ -232,6 +236,6 @@ fun TenantChooser(context: Context) {
 fun MainScreenTenantPreview() {
     val context = LocalContext.current
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        TenantMainScreen(context)
+        TenantMainScreen(context, "xpBXl55uCGmuwFWVxNv7")
     }
 }

@@ -26,9 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
+import com.example.appartamenty.data.Landlord
+import com.example.appartamenty.data.Property
 
 class MainScreenLandlordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val landlordId = intent.getStringExtra("landlordId")
+
         super.onCreate(savedInstanceState)
         setContent {
             AppartamentyTheme {
@@ -37,7 +42,9 @@ class MainScreenLandlordActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LandlordMainScreen(LocalContext.current)
+                    if (landlordId != null) {
+                        LandlordMainScreen(LocalContext.current, landlordId)
+                    }
                 }
             }
         }
@@ -45,7 +52,7 @@ class MainScreenLandlordActivity : ComponentActivity() {
 }
 
 @Composable
-fun LandlordMainScreen(context: Context) {
+fun LandlordMainScreen(context: Context, landlordId: String) {
 
     Column(
         modifier = Modifier
@@ -54,7 +61,7 @@ fun LandlordMainScreen(context: Context) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppLogo()
-        LandlordChooser(context)
+        LandlordChooser(context, landlordId)
     }
 }
 
@@ -89,7 +96,7 @@ fun AppLogo() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandlordChooser(context: Context) {
+fun LandlordChooser(context: Context, landlordId: String) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -107,6 +114,7 @@ fun LandlordChooser(context: Context) {
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
                 onClick = {
                     var intent = Intent(context, LandlordListPropertiesActivity::class.java)
+                    intent.putExtra("landlordId", landlordId)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
@@ -280,8 +288,7 @@ fun LandlordChooser(context: Context) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainScreenLandlordPreview() {
-    val context = LocalContext.current
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        LandlordMainScreen(context)
+        LandlordMainScreen(LocalContext.current, "XJWXUFoiAEV0efxdGpPrdDNVS3M2")
     }
 }

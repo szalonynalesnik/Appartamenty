@@ -73,19 +73,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//@Composable
-//fun WelcomeScreen(context: Context) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        MainWelcome(context = context)
-//        LoginScreen(auth)
-//    }
-//}
-
 @Composable
 fun MainScreen(auth: FirebaseAuth) {
     Column(
@@ -111,10 +98,10 @@ fun checkIfLandlord(context: Context){
     db.collection("landlords").document(userId).get()
         .addOnSuccessListener { doc ->
             if (doc.data != null) {
-                logInUser(context, true)
+                logInUser(context, true, userId)
                 Log.d(TAG, "DocumentSnapshot data: ${doc.data}")
             } else {
-                logInUser(context, false)
+                logInUser(context, false, userId)
             }
         }
         .addOnFailureListener {
@@ -122,14 +109,16 @@ fun checkIfLandlord(context: Context){
         }
 }
 
-fun logInUser(context: Context, isLandlord: Boolean){
+fun logInUser(context: Context, isLandlord: Boolean, userId: String){
 
     if (isLandlord){
         val intent = Intent(context, MainScreenLandlordActivity::class.java)
+        intent.putExtra("landlordId", userId)
         context.startActivity(intent)
     }
     else{
         val intent = Intent(context, MainScreenTenantActivity::class.java)
+        intent.putExtra("tenantId", userId)
         context.startActivity(intent)
     }
 

@@ -17,7 +17,7 @@
     <string name="enterpassword">Enter password</string>
     <string name="address">Addres</string>
     <string name="street">Ulica</string>
-    <string name="houseno">Numer domu</string>
+    <string name="streetNo">Numer domu</string>
     <string name="aptno">Numer mieszkania</string>
     <string name="postcode">Kod pocztowy</string>
     <string name="city">Miasto</string>

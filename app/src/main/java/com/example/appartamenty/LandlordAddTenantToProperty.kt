@@ -48,10 +48,11 @@ class LandlordAddTenantToProperty : ComponentActivity() {
     private val auth by lazy {
         Firebase.auth
     }
-    private val database by lazy {
-        Firebase.database
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val propertyId = intent.getStringExtra("propertyId")
+        val landlordId = intent.getStringExtra("landlordId")
         super.onCreate(savedInstanceState)
         setContent {
             AppartamentyTheme {
@@ -60,7 +61,9 @@ class LandlordAddTenantToProperty : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AddTenantForm(auth, database)
+                    if (propertyId != null && landlordId != null) {
+                        AddTenantForm(auth, propertyId, landlordId)
+                    }
                 }
             }
         }
@@ -68,12 +71,10 @@ class LandlordAddTenantToProperty : ComponentActivity() {
 }
 
 @Composable
-fun AddTenantForm(auth: FirebaseAuth, database: FirebaseDatabase) {
+fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
 
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-
 
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -113,40 +114,31 @@ fun AddTenantForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         rent: Number,
     ) {
         if (validateData(firstName, lastName, email, rent.toString())) {
-            var landlordId = auth.currentUser?.uid
-            Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Landlord ID: $landlordId")
             auth.createUserWithEmailAndPassword(email, "not-set")
             auth.sendPasswordResetEmail(email)
-            // get landlord ID
             var tenantId = auth.currentUser?.uid
             Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
 
-
-            // find property belonging to landlord
-            var property =
-                database.collection("properties").whereEqualTo("landlordId", landlordId).get()
-            property.addOnSuccessListener { matchedProperties ->
-                for (matchedProperty in matchedProperties) {
-                    // get propertyId
-                    var propertyId = matchedProperty.id
-                    val tenant = Tenant(firstName, lastName, email, rent, propertyId)
-                            val handle = database.collection("tenants").add(tenant)
-                            handle.addOnSuccessListener {
-                                Log.d(
-                                    MainActivity::class.java.simpleName,
-                                    "Adding tenant to database successful"
-                                )
-                            handle.addOnFailureListener {
-                                Log.d(
-                                    MainActivity::class.java.simpleName,
-                                    "Adding tenant to database failed"
-                                )
-                            }
-                        }
+            val tenant = Tenant(firstName, lastName, email, rent, propertyId)
+            val handle = database.collection("tenants").add(tenant)
+            handle.addOnSuccessListener {
+                Log.d(
+                    MainActivity::class.java.simpleName,
+                    "Adding tenant to database successful"
+                )
+                handle.addOnFailureListener {
+                    Log.d(
+                        MainActivity::class.java.simpleName,
+                        "Adding tenant to database failed"
+                    )
                 }
             }
         }
+
     }
+
+    val context = LocalContext.current
+
 
     Column(
         modifier = Modifier
@@ -229,6 +221,9 @@ fun AddTenantForm(auth: FirebaseAuth, database: FirebaseDatabase) {
         Button(
             onClick = {
                 addTenant(firstName, lastName, email, rent.toFloat())
+                val intent = Intent(context, LandlordListPropertiesActivity::class.java)
+                intent.putExtra("landlordId", landlordId)
+                context.startActivity(intent)
             },
             modifier = Modifier
                 .padding(top = 24.dp)
@@ -251,6 +246,6 @@ fun AddTenantForm(auth: FirebaseAuth, database: FirebaseDatabase) {
 @Composable
 fun AddTenantsPreview() {
     AppartamentyTheme {
-        AddTenantForm(Firebase.auth, FirebaseDatabase.getInstance())
+        AddTenantForm(Firebase.auth, "7YZpsyr1ze4UWTAt0vDe")
     }
 }

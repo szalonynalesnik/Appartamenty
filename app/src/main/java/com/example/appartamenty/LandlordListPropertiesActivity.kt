@@ -25,19 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.data.Property
 import com.example.appartamenty.ui.theme.AppartamentyTheme
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
 class LandlordListPropertiesActivity : ComponentActivity() {
-    private val auth by lazy {
-        Firebase.auth
-    }
-    private val database by lazy {
-        FirebaseFirestore.getInstance()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val landlordId = intent.getStringExtra("landlordId")
+
         super.onCreate(savedInstanceState)
         setContent {
             AppartamentyTheme {
@@ -46,7 +42,9 @@ class LandlordListPropertiesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SetPropertyData()
+                    if (landlordId != null) {
+                        SetPropertyData(landlordId)
+                    }
                 }
             }
         }
@@ -55,10 +53,8 @@ class LandlordListPropertiesActivity : ComponentActivity() {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SetPropertyData() {
+fun SetPropertyData(landlordId: String) {
 
-    val landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2"
-        // Firebase.auth.currentUser?.uid.toString()
     val propertyList = mutableStateListOf<Property?>()
     // on below line creating variable for freebase database
     // and database reference.
@@ -92,13 +88,12 @@ fun SetPropertyData() {
         }
 
     // on below line we are calling method to display UI
-    ShowLazyList(propertyList)
-
+    ShowLazyList(propertyList, landlordId)
 
 }
 
 @Composable
-fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
+fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String) {
 
     val context = LocalContext.current
 
@@ -121,7 +116,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
         LazyColumn {
             itemsIndexed(propertyList) { index, item ->
                 if (item != null) {
-                    CardItem(item)
+                    CardItem(item, landlordId)
                 } else {
                     Text(text = stringResource(R.string.no_properties))
                 }
@@ -131,6 +126,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
             modifier = Modifier.padding(top = 16.dp),
             onClick = {
                 val intent = Intent(context, LandlordAddRealEstate::class.java)
+                intent.putExtra("landlordId", landlordId)
                 context.startActivity(intent)
             }) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
@@ -142,7 +138,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardItem(property: Property) {
+fun CardItem(property: Property, landlordId: String) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -155,7 +151,7 @@ fun CardItem(property: Property) {
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
             val intent = Intent(context, LandlordPropertyDetails::class.java)
-            intent.putExtra("property", property)
+            intent.putExtra("property", property).putExtra("landlordId", landlordId)
             context.startActivity(intent)
         }
     ) {
@@ -168,7 +164,7 @@ fun CardItem(property: Property) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = property.street.toString() + " " + property.streetNo.toString() + "/" + property.houseNo.toString() + ", " + property.city.toString(),
+                text = property.street.toString() + " " + property.streetNo.toString() + "/" + property.apartmentNo.toString() + ", " + property.city.toString(),
                 textAlign = TextAlign.Center
             )
         }
@@ -179,6 +175,6 @@ fun CardItem(property: Property) {
 @Composable
 fun DefaultPreview() {
     AppartamentyTheme {
-        SetPropertyData()
+        SetPropertyData(landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2")
     }
 }
