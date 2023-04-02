@@ -85,9 +85,12 @@
     <string name="add_tenant">Invite tenant to join</string>
     <string name="add_tenant_title">Add new tenant to property</string>
     <string name="title_activity_landlord_list_properties" translatable="false">LandlordListProperties</string>
-    <string name="properties">Properties</string>
+    <string name="properties">Your properties</string>
     <string name="no_properties">You haven\'t added any properties yet.</string>
     <string name="add_property">Add new property</string>
     <string name="title_activity_navigation">Navigation</string>
     <string name="title_activity_landlord_property_details">LandlordPropertyDetails</string>
+    <string name="gas_constant">Natural gas [fixed price per month]</string>
+    <string name="electricity_constant">Electricity [fixed price per month]</string>
+    <string name="title_activity_calculate_rent">CalculateRentActivity</string>
 </resources>

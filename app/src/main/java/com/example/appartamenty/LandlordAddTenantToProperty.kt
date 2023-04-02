@@ -114,25 +114,27 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
         rent: Number,
     ) {
         if (validateData(firstName, lastName, email, rent.toString())) {
-            auth.createUserWithEmailAndPassword(email, "not-set")
-            auth.sendPasswordResetEmail(email)
-            var tenantId = auth.currentUser?.uid
-            Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
+            auth.createUserWithEmailAndPassword(email, "not-set").addOnSuccessListener {
 
-            val tenant = Tenant(firstName, lastName, email, rent, propertyId)
-            val handle = database.collection("tenants").add(tenant)
-            handle.addOnSuccessListener {
-                Log.d(
-                    MainActivity::class.java.simpleName,
-                    "Adding tenant to database successful"
-                )
-                handle.addOnFailureListener {
+                var tenantId = auth.currentUser?.uid
+                Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
+                val tenant = Tenant(firstName, lastName, email, rent, propertyId)
+                val handle = database.collection("tenants").document(tenantId.toString()).set(tenant)
+                handle.addOnSuccessListener {
                     Log.d(
                         MainActivity::class.java.simpleName,
-                        "Adding tenant to database failed"
+                        "Adding tenant to database successful"
                     )
+                    handle.addOnFailureListener {
+                        Log.d(
+                            MainActivity::class.java.simpleName,
+                            "Adding tenant to database failed"
+                        )
+                    }
                 }
+                auth.sendPasswordResetEmail(email)
             }
+
         }
 
     }
@@ -246,6 +248,6 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
 @Composable
 fun AddTenantsPreview() {
     AppartamentyTheme {
-        AddTenantForm(Firebase.auth, "7YZpsyr1ze4UWTAt0vDe")
+        AddTenantForm(Firebase.auth, "7YZpsyr1ze4UWTAt0vDe", landlordId = "53TtHZYOTBZZSP8GG6RrqjgO5DC2")
     }
 }

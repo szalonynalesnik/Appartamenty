@@ -26,11 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val tenantId = intent.getStringExtra("tenantId")
+        val tenantId = Firebase.auth.currentUser?.uid
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -236,6 +238,6 @@ fun TenantChooser(context: Context, tenantId: String) {
 fun MainScreenTenantPreview() {
     val context = LocalContext.current
     com.example.appartamenty.ui.theme.AppartamentyTheme {
-        TenantMainScreen(context, "xpBXl55uCGmuwFWVxNv7")
+        TenantMainScreen(context, "GqXmdTRxynWHhnnzJcSm5M6ei6b2")
     }
 }

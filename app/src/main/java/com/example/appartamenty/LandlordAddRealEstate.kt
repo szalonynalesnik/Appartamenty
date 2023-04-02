@@ -103,6 +103,9 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
     var waterPrice by rememberSaveable { mutableStateOf("") }
     var internetPrice by rememberSaveable { mutableStateOf("") }
 
+    var gasPriceConstant by rememberSaveable { mutableStateOf("") }
+    var electricityPriceConstant by rememberSaveable { mutableStateOf("") }
+
     var property: Property
 
     fun addProperty(
@@ -305,9 +308,37 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
             )
         )
         CustomOutlinedTextField(
+            value = electricityPriceConstant,
+            onValueChange = { electricityPriceConstant = it },
+            label = stringResource(R.string.electricity_constant),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            leadingIconImageVector = Icons.Default.PropaneTank,
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            )
+        )
+        CustomOutlinedTextField(
             value = gasPrice,
             onValueChange = { gasPrice = it },
             label = stringResource(R.string.gas),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            leadingIconImageVector = Icons.Default.PropaneTank,
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            )
+        )
+        CustomOutlinedTextField(
+            value = gasPriceConstant,
+            onValueChange = { gasPriceConstant = it },
+            label = stringResource(R.string.gas_constant),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
@@ -355,8 +386,14 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
         if (electricityPrice.toFloat() > 0) {
             addUtility(constant = false, name = "Electricity", price = electricityPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
+        if (electricityPriceConstant.toFloat() > 0) {
+            addUtility(constant = true, name = "Electricity - constant", price = electricityPriceConstant.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        }
         if (gasPrice.toFloat() > 0) {
             addUtility(constant = false, name = "Gas", price = gasPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        }
+        if (gasPriceConstant.toFloat() > 0) {
+            addUtility(constant = true, name = "Gas - constant", price = gasPriceConstant.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
         if (waterPrice.toFloat() > 0) {
             addUtility(constant = false, name = "Water", price = waterPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
@@ -371,7 +408,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, locale = "pl")
 @Composable
 fun LandlordAddRealEstatePreview() {
     com.example.appartamenty.ui.theme.AppartamentyTheme {

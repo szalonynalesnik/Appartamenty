@@ -27,13 +27,16 @@ class LandlordPropertyDetails : ComponentActivity() {
         setContent {
 
             val property = intent.extras?.get("property") as Property
+            val landlordId = intent.extras?.getString("landlordId")
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ShowProperty(property)
+                    if (landlordId != null) {
+                        ShowProperty(property, landlordId)
+                    }
                 }
             }
         }
@@ -42,7 +45,7 @@ class LandlordPropertyDetails : ComponentActivity() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ShowProperty(property: Property) {
+fun ShowProperty(property: Property, landlordId: String) {
 
     Log.d(LandlordPropertyDetails::class.java.simpleName, "Object: ${property.street}")
 
@@ -90,6 +93,7 @@ fun ShowProperty(property: Property) {
                 onClick = {
                     val intent = Intent(context, LandlordAddTenantToProperty::class.java)
                     intent.putExtra("propertyId", property.propertyId)
+                    intent.putExtra("landlordId", landlordId)
                     context.startActivity(intent)
                 }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")

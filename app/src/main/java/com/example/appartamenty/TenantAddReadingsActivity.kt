@@ -112,27 +112,27 @@ fun ReadingForm(tenantId: String) {
                                 database.collection("meter_readings").add(meterReading)
                             newMeterReading.addOnSuccessListener {
                                 Log.d(
-                                    MainActivity::class.java.simpleName,
+                                    TenantAddReadingsActivity::class.java.simpleName,
                                     "Adding meter reading to database successful"
                                 )
                             }
                                 .addOnFailureListener {
                                     Log.d(
-                                        MainActivity::class.java.simpleName,
+                                        TenantAddReadingsActivity::class.java.simpleName,
                                         "Could not add meter reading to database"
                                     )
                                 }
                         }
                     }.addOnFailureListener {
                         Log.d(
-                            MainActivity::class.java.simpleName,
+                            TenantAddReadingsActivity::class.java.simpleName,
                             "Could not find utility"
                         )
                     }
             }
             }.addOnFailureListener {
             Log.d(
-                MainActivity::class.java.simpleName,
+                TenantAddReadingsActivity::class.java.simpleName,
                 "Could not find tenant"
             )
         }
@@ -232,7 +232,7 @@ fun ReadingForm(tenantId: String) {
             modifier = Modifier.padding(top = 24.dp),
             onClick = {
                 if (electricityReading.toFloat() > 0) {
-                    addReading(datePicked, "Electricity", electricityReading.toFloat())
+                    addRe bbbbbbbbbbbbbbbbbbk,mjjźading(datePicked, "Electricity", electricityReading.toFloat())
                 }
                 if (gasReading.toFloat() > 0) {
                     addReading(datePicked, "Gas", gasReading.toFloat())
@@ -253,6 +253,6 @@ fun ReadingForm(tenantId: String) {
 fun TenantAddReadingsPreview() {
 
     AppartamentyTheme {
-        TenantAddReadingsScreen("xpBXl55uCGmuwFWVxNv7")
+        TenantAddReadingsScreen("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
     }
 }
