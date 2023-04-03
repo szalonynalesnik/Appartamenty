@@ -114,11 +114,13 @@ fun logInUser(context: Context, isLandlord: Boolean, userId: String){
     if (isLandlord){
         val intent = Intent(context, MainScreenLandlordActivity::class.java)
         intent.putExtra("landlordId", userId)
+        Log.d(MainActivity::class.java.simpleName, "Landlord ID passed on: $userId")
         context.startActivity(intent)
     }
     else{
         val intent = Intent(context, MainScreenTenantActivity::class.java)
         intent.putExtra("tenantId", userId)
+        Log.d(MainActivity::class.java.simpleName, "Tenant ID passed on: $userId")
         context.startActivity(intent)
     }
 

@@ -70,7 +70,7 @@ fun SetRentData(tenantId: String) {
 
     var tenant = database.collection("tenants").document(tenantId).get()
     tenant.addOnSuccessListener { doc ->
-        if (!doc.exists()) {
+        if (doc.exists()) {
             var propertyId = doc.get("propertyId")
             database.collection("utilities").whereEqualTo("propertyId", propertyId).orderBy("name")
                 .get()

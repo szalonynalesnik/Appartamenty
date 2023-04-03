@@ -1,7 +1,7 @@
 package com.example.appartamenty
 
 import android.app.DatePickerDialog
-import android.content.Context
+import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,20 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.composables.CustomUtilityField
 import com.example.appartamenty.data.MeterReading
-import com.example.appartamenty.data.Property
-import com.example.appartamenty.data.Utility
 import com.example.appartamenty.ui.theme.AppartamentyTheme
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import java.util.*
 
 class TenantAddReadingsActivity : ComponentActivity() {
@@ -96,17 +85,24 @@ fun ReadingForm(tenantId: String) {
     val database = FirebaseFirestore.getInstance()
 
     fun addReading(date: String, utilityName: String, value: Number) {
-
+        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Starting to add reading")
+        // find tenant in database
         var tenant = database.collection("tenants").document(tenantId).get()
+
         tenant.addOnSuccessListener { doc ->
-            if (!doc.exists()) {
+            if (doc.exists()) {
+                Log.d(TenantAddReadingsActivity::class.java.simpleName, "Tenant retrieved")
+                // find ID of property that tenant is assigned to
                 var propertyId = doc.get("propertyId")
+                // find utility object belonging to property
                 database.collection("utilities").whereEqualTo("propertyId", propertyId)
                     .whereEqualTo("name", utilityName).get()
                     .addOnSuccessListener { matchingUtilities ->
+                        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Utility retrieved")
                         for (matchingUtility in matchingUtilities) {
                             var utilityId = matchingUtility.id
-                            val meterReading = MeterReading(date, utilityName, value, utilityId)
+                            val meterReading = MeterReading(date, utilityName,
+                                value as Double, utilityId)
                             // add new meter reading to database
                             var newMeterReading =
                                 database.collection("meter_readings").add(meterReading)
@@ -165,7 +161,8 @@ fun ReadingForm(tenantId: String) {
         context,
         { _: DatePicker, year: Int, month: Int, day: Int ->
             datePicked =
-                String.format("%02d", day) + "/" + String.format("%02d", month + 1) + "/$year"
+            //    String.format("%02d", day) + "/" + String.format("%02d", month + 1) + "/$year"
+            String.format("$year/" + String.format("%02d", month + 1) + "/" + String.format("%02d", day))
         }, year, month, day
     )
 
@@ -231,18 +228,24 @@ fun ReadingForm(tenantId: String) {
         Button(
             modifier = Modifier.padding(top = 24.dp),
             onClick = {
-                if (electricityReading.toFloat() > 0) {
-                    addRe bbbbbbbbbbbbbbbbbbk,mjjźading(datePicked, "Electricity", electricityReading.toFloat())
+                if (electricityReading.toDouble() > 0) {
+                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding electricity")
+                    addReading(datePicked, "Electricity", electricityReading.toDouble())
                 }
-                if (gasReading.toFloat() > 0) {
-                    addReading(datePicked, "Gas", gasReading.toFloat())
+                if (gasReading.toDouble() > 0) {
+                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding gas")
+                    addReading(datePicked, "Gas", gasReading.toDouble())
                 }
-                if (waterReading.toFloat() > 0) {
-                    addReading(datePicked, "Water", waterReading.toFloat())
+                if (waterReading.toDouble() > 0) {
+                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding water")
+                    addReading(datePicked, "Water", waterReading.toDouble())
                 }
+                val intent = Intent(context, MainScreenTenantActivity::class.java)
+                intent.putExtra("tenantId", tenantId)
+                context.startActivity(intent)
             }, shape = RoundedCornerShape(20.dp)
         ) {
-            Text(text = stringResource(R.string.confirm))
+            Text(text = stringResource(R.string.confirm_send_to_landlord))
         }
 
     }

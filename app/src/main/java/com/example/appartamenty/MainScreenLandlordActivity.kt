@@ -28,6 +28,8 @@ import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
 import com.example.appartamenty.data.Landlord
 import com.example.appartamenty.data.Property
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainScreenLandlordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,7 +166,7 @@ fun LandlordChooser(context: Context, landlordId: String) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        Icons.Default.Calculate,
+                        Icons.Default.GasMeter,
                         contentDescription = "utility meter readings",
                         modifier = Modifier
                             .size(48.dp)
@@ -195,8 +197,8 @@ fun LandlordChooser(context: Context, landlordId: String) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        Icons.Default.CalendarMonth,
-                        contentDescription = "calendar",
+                        Icons.Default.Payments,
+                        contentDescription = "rent",
                         modifier = Modifier
                             .size(48.dp),
                     )
@@ -204,81 +206,102 @@ fun LandlordChooser(context: Context, landlordId: String) {
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
                             .fillMaxWidth(),
-                        text = stringResource(R.string.calendar),
+                        text = "Calculate rent",
                         textAlign = TextAlign.Center
                     )
                 }
             }
         }
+//        Row(
+//            modifier = Modifier
+//                .height(intrinsicSize = IntrinsicSize.Max)
+//                .padding(vertical = 8.dp),
+//            horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
+//        ) {
+//            Card(
+//                modifier = Modifier
+//                    .weight(0.5f)
+//                    .fillMaxSize(),
+//                colors = CardDefaults.cardColors(
+//                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//                ),
+//                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+//            ) {
+//                Column(
+//                    modifier = Modifier
+//                        .padding(vertical = 16.dp)
+//                        .fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Icon(
+//                        Icons.Default.Build,
+//                        contentDescription = "fault reports",
+//                        modifier = Modifier
+//                            .size(48.dp)
+//                    )
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(vertical = 10.dp, horizontal = 10.dp),
+//                        text = stringResource(R.string.faultr_reports),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
+//            Card(
+//                modifier = Modifier
+//                    .weight(0.5f)
+//                    .fillMaxSize(),
+//                colors = CardDefaults.cardColors(
+//                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//                ),
+//                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+//
+//            ) {
+//                Column(
+//                    modifier = Modifier
+//                        .padding(vertical = 16.dp)
+//                        .fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Icon(
+//                        Icons.Default.Chat,
+//                        contentDescription = "contact tenants",
+//                        modifier = Modifier
+//                            .size(48.dp),
+//                    )
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(vertical = 10.dp, horizontal = 10.dp)
+//                            .fillMaxWidth(),
+//                        text = stringResource(R.string.contact_tenants),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
+//        }
         Row(
             modifier = Modifier
-                .height(intrinsicSize = IntrinsicSize.Max)
+                .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
-        ) {
-            Card(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxSize(),
-                colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            OutlinedButton(
+                onClick = { Firebase.auth.signOut()
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)},
+                modifier = Modifier.padding(vertical = 8.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Build,
-                        contentDescription = "fault reports",
-                        modifier = Modifier
-                            .size(48.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = stringResource(R.string.faultr_reports),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxSize(),
-                colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
-
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Chat,
-                        contentDescription = "contact tenants",
-                        modifier = Modifier
-                            .size(48.dp),
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp)
-                            .fillMaxWidth(),
-                        text = stringResource(R.string.contact_tenants),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Icon(imageVector = Icons.Default.Logout, contentDescription = "Log out")
+                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                Text(text = "Log out")
             }
         }
     }

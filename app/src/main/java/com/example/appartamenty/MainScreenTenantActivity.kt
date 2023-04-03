@@ -2,12 +2,11 @@ package com.example.appartamenty
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -15,17 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
-import com.example.appartamenty.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -89,8 +84,9 @@ fun TenantChooser(context: Context, tenantId: String) {
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 onClick = {
-                    var intent = Intent(context, TenantAddReadingsActivity::class.java)
+                    val intent = Intent(context, TenantAddReadingsActivity::class.java)
                     intent.putExtra("tenantId", tenantId)
+                    Log.d(MainScreenTenantActivity::class.java.simpleName, "Tenant ID passed on: $tenantId")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
@@ -103,7 +99,7 @@ fun TenantChooser(context: Context, tenantId: String) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        Icons.Default.Calculate,
+                        Icons.Default.GasMeter,
                         contentDescription = stringResource(R.string.utility_meter_readings),
                         modifier = Modifier
                             .size(48.dp)
@@ -116,6 +112,7 @@ fun TenantChooser(context: Context, tenantId: String) {
                     )
                 }
             }
+
             Card(
                 modifier = Modifier
                     .weight(0.5f)
@@ -137,8 +134,9 @@ fun TenantChooser(context: Context, tenantId: String) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        Icons.Default.CalendarMonth,
-                        contentDescription = "calendar",
+
+                        Icons.Default.Payments,
+                        contentDescription = "rent",
                         modifier = Modifier
                             .size(48.dp),
                     )
@@ -146,7 +144,7 @@ fun TenantChooser(context: Context, tenantId: String) {
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
                             .fillMaxWidth(),
-                        text = stringResource(R.string.calendar),
+                        text = "Rent",
                         textAlign = TextAlign.Center
                     )
                 }
@@ -154,81 +152,104 @@ fun TenantChooser(context: Context, tenantId: String) {
         }
         Row(
             modifier = Modifier
-                .height(intrinsicSize = IntrinsicSize.Max)
+                .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
-        ) {
-            Card(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxSize(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-
-                ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Build,
-                        contentDescription = "report a fault",
-                        modifier = Modifier
-                            .size(48.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = stringResource(R.string.report_fault),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .weight(0.5f)
-                    .fillMaxSize(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            OutlinedButton(
+                onClick = { Firebase.auth.signOut()
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)},
+                modifier = Modifier.padding(vertical = 8.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
             ) {
-                Column(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Chat,
-                        contentDescription = "contact landlord",
-                        modifier = Modifier
-                            .size(48.dp),
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp, horizontal = 10.dp)
-                            .fillMaxWidth(),
-                        text = stringResource(R.string.contact_landlord),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Icon(imageVector = Icons.Default.Logout, contentDescription = "Log out")
+                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                Text(text = "Log out")
             }
         }
+
+
+//        Row(
+//            modifier = Modifier
+//                .height(intrinsicSize = IntrinsicSize.Max)
+//                .padding(vertical = 8.dp),
+//            horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
+//        ) {
+//            Card(
+//                modifier = Modifier
+//                    .weight(0.5f)
+//                    .fillMaxSize(),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//                ),
+//                border = BorderStroke(
+//                    width = 1.dp,
+//                    color = MaterialTheme.colorScheme.onSecondaryContainer
+//                ),
+//
+//                ) {
+//                Column(
+//                    modifier = Modifier
+//                        .padding(vertical = 16.dp)
+//                        .fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Icon(
+//                        Icons.Default.Build,
+//                        contentDescription = "report a fault",
+//                        modifier = Modifier
+//                            .size(48.dp)
+//                    )
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(vertical = 10.dp, horizontal = 10.dp),
+//                        text = stringResource(R.string.report_fault),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
+//            Card(
+//                modifier = Modifier
+//                    .weight(0.5f)
+//                    .fillMaxSize(),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//                ),
+//                border = BorderStroke(
+//                    width = 1.dp,
+//                    color = MaterialTheme.colorScheme.onSecondaryContainer
+//                )
+//            ) {
+//                Column(
+//                    modifier = Modifier
+//                        .padding(vertical = 16.dp)
+//                        .fillMaxSize(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    Icon(
+//                        Icons.Default.Chat,
+//                        contentDescription = "contact landlord",
+//                        modifier = Modifier
+//                            .size(48.dp),
+//                    )
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(vertical = 10.dp, horizontal = 10.dp)
+//                            .fillMaxWidth(),
+//                        text = stringResource(R.string.contact_landlord),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
+//        }
     }
 
 }
