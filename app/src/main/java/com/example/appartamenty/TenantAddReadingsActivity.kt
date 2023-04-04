@@ -140,7 +140,7 @@ fun ReadingForm(tenantId: String) {
 
     }
 
-    fun addCalculation(datePicked: String, utilityName: String, newValue: Double) {
+    fun addCalculation(datePicked: String, utilityName: String, newValue: Double, timestamp: Long) {
 
         var calculation = UtilityPrice()
 
@@ -179,6 +179,7 @@ fun ReadingForm(tenantId: String) {
                                                         pastReading.value,
                                                         utility.price,
                                                         (newValue - pastReading.value) * utility.price,
+                                                        timestamp,
                                                         propertyId.toString()
                                                     )
 
@@ -310,24 +311,25 @@ fun ReadingForm(tenantId: String) {
             Button(
                 modifier = Modifier.padding(top = 24.dp),
                 onClick = {
+                    val timestamp = System.currentTimeMillis()
                     if (electricityReading.toDouble() > 0) {
                         Log.d(
                             TenantAddReadingsActivity::class.java.simpleName,
                             "Adding electricity"
                         )
-                        addCalculation(datePicked, "Electricity", electricityReading.toDouble())
+                        addCalculation(datePicked, "Electricity", electricityReading.toDouble(), timestamp)
                         //addReading(datePicked, "Electricity", electricityReading.toDouble())
 
                     }
                     if (gasReading.toDouble() > 0) {
                         Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding gas")
-                        addCalculation(datePicked, "Gas", gasReading.toDouble())
+                        addCalculation(datePicked, "Gas", gasReading.toDouble(), timestamp)
                         //addReading(datePicked, "Gas", gasReading.toDouble())
 
                     }
                     if (waterReading.toDouble() > 0) {
                         Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding water")
-                        addCalculation(datePicked, "Water", waterReading.toDouble())
+                        addCalculation(datePicked, "Water", waterReading.toDouble(), timestamp)
                         // addReading(datePicked, "Water", waterReading.toDouble())
 
                     }

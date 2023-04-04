@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
+import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.example.appartamenty.R
 import com.example.appartamenty.data.Landlord
 import com.example.appartamenty.data.Property
@@ -110,10 +110,10 @@ fun LandlordChooser(context: Context, landlordId: String) {
             Card(
                 modifier = Modifier,
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer),
                 onClick = {
                     var intent = Intent(context, LandlordListPropertiesActivity::class.java)
                     intent.putExtra("landlordId", landlordId)
@@ -153,10 +153,10 @@ fun LandlordChooser(context: Context, landlordId: String) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Column(
                     modifier = Modifier
@@ -184,10 +184,10 @@ fun LandlordChooser(context: Context, landlordId: String) {
                     .weight(0.5f)
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    containerColor =  MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Column(
                     modifier = Modifier

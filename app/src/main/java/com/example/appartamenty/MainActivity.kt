@@ -303,12 +303,12 @@ fun LoginWelcome() {
                 modifier = Modifier
                     .size(50.dp)
                     .padding(horizontal = 8.dp),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimaryContainer)
             )
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Light,
                 modifier = Modifier,
             )

@@ -118,7 +118,7 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
 
                 var tenantId = auth.currentUser?.uid
                 Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
-                val tenant = Tenant(firstName, lastName, email, rent, propertyId)
+                val tenant = Tenant(firstName, lastName, email, rent.toDouble(), propertyId)
                 val handle = database.collection("tenants").document(tenantId.toString()).set(tenant)
                 handle.addOnSuccessListener {
                     Log.d(

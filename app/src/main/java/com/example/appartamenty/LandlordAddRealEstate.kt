@@ -32,7 +32,7 @@ import com.example.appartamenty.R.string.streetNo
 import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Utility
-import com.example.appartamenty.ui.theme.ui.theme.AppartamentyTheme
+import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
