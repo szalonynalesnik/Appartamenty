@@ -28,8 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.composables.CustomUtilityField
 import com.example.appartamenty.data.MeterReading
+import com.example.appartamenty.data.Utility
+import com.example.appartamenty.data.UtilityPrice
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.util.*
 
 class TenantAddReadingsActivity : ComponentActivity() {
@@ -101,8 +104,10 @@ fun ReadingForm(tenantId: String) {
                         Log.d(TenantAddReadingsActivity::class.java.simpleName, "Utility retrieved")
                         for (matchingUtility in matchingUtilities) {
                             var utilityId = matchingUtility.id
-                            val meterReading = MeterReading(date, utilityName,
-                                value as Double, utilityId)
+                            val meterReading = MeterReading(
+                                date, utilityName,
+                                value as Double, utilityId
+                            )
                             // add new meter reading to database
                             var newMeterReading =
                                 database.collection("meter_readings").add(meterReading)
@@ -126,136 +131,222 @@ fun ReadingForm(tenantId: String) {
                         )
                     }
             }
-            }.addOnFailureListener {
+        }.addOnFailureListener {
             Log.d(
                 TenantAddReadingsActivity::class.java.simpleName,
                 "Could not find tenant"
             )
         }
 
+    }
 
+    fun addCalculation(datePicked: String, utilityName: String, newValue: Double) {
 
+        var calculation = UtilityPrice()
+
+        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Starting to add reading")
+
+        // find tenant in database
+        var tenant = database.collection("tenants").document(tenantId).get()
+
+        tenant.addOnSuccessListener { doc ->
+            if (doc.exists()) {
+                Log.d(TenantAddReadingsActivity::class.java.simpleName, "Tenant retrieved")
+                // find ID of property that tenant is assigned to
+                var propertyId = doc.get("propertyId")
+                // find utilities available in the property
+                database.collection("utilities").whereEqualTo("propertyId", propertyId)
+                    .whereEqualTo("name", utilityName).get()
+                    .addOnSuccessListener { matchingUtilities ->
+                        for (matchingUtility in matchingUtilities) {
+                            var utilityId = matchingUtility.id
+                            database.collection("meter_readings")
+                                .whereEqualTo("utilityId", utilityId)
+                                .orderBy("date", Query.Direction.DESCENDING).limit(1).get()
+                                .addOnSuccessListener { documents ->
+                                    for (document in documents) {
+                                        val pastReading =
+                                            document.toObject(MeterReading::class.java)
+                                        database.collection("utilities")
+                                            .whereEqualTo("name", utilityName).get()
+                                            .addOnSuccessListener { documents ->
+                                                for (document in documents) {
+                                                    val utility =
+                                                        document.toObject(Utility::class.java)
+                                                    calculation = UtilityPrice(
+                                                        utilityName,
+                                                        newValue,
+                                                        pastReading.value,
+                                                        utility.price,
+                                                        (newValue - pastReading.value) * utility.price,
+                                                        propertyId.toString()
+                                                    )
+
+                                                    database.collection("monthly_calculations")
+                                                        .add(calculation)
+                                                        .addOnSuccessListener {
+                                                            Log.d(
+                                                                "SUCCESS",
+                                                                "Calculation added successfully"
+                                                            )
+                                                            addReading(
+                                                                datePicked,
+                                                                utilityName,
+                                                                newValue
+                                                            )
+                                                        }
+                                                        .addOnFailureListener {
+                                                            Log.d("ERROR", "Calculation not added")
+                                                        }
+                                                }
+
+                                            }.addOnFailureListener {
+                                                Log.d("ERROR", "Could not find utilities")
+                                            }
+                                    }
+                                }.addOnFailureListener {
+                                    Log.d("ERROR", "Could not find meter readings")
+                                }
+
+                        }
+                    }
+            }
+        }
     }
 
 
-    val year: Int
-    val month: Int
-    val day: Int
-    val focusManager = LocalFocusManager.current
+        val year: Int
+        val month: Int
+        val day: Int
+        val focusManager = LocalFocusManager.current
 
-    var datePicked by remember { mutableStateOf("None") }
-    var electricityReading by rememberSaveable { mutableStateOf("") }
-    var gasReading by rememberSaveable { mutableStateOf("") }
-    var waterReading by rememberSaveable { mutableStateOf("") }
+        var datePicked by remember { mutableStateOf("None") }
+        var electricityReading by rememberSaveable { mutableStateOf("") }
+        var gasReading by rememberSaveable { mutableStateOf("") }
+        var waterReading by rememberSaveable { mutableStateOf("") }
 
 
-    val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
 
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
+        year = calendar.get(Calendar.YEAR)
+        month = calendar.get(Calendar.MONTH)
+        day = calendar.get(Calendar.DAY_OF_MONTH)
 
-    calendar.time = Date()
+        calendar.time = Date()
 
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, day: Int ->
-            datePicked =
-            //    String.format("%02d", day) + "/" + String.format("%02d", month + 1) + "/$year"
-            String.format("$year/" + String.format("%02d", month + 1) + "/" + String.format("%02d", day))
-        }, year, month, day
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-        Text(text = "Readings for date: ${datePicked}")
-        Spacer(modifier = Modifier.size(16.dp))
-        OutlinedButton(
-            modifier = Modifier.padding(bottom = 24.dp),
-            onClick = {
-                datePickerDialog.show()
-            }) {
-            Text(text = stringResource(R.string.choose_date))
-        }
-        CustomUtilityField(
-            value = electricityReading,
-            onValueChange = { electricityReading = it },
-            label = stringResource(R.string.electricity_reading_label),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            showError = false,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, day: Int ->
+                datePicked =
+                        //    String.format("%02d", day) + "/" + String.format("%02d", month + 1) + "/$year"
+                    String.format(
+                        "$year/" + String.format(
+                            "%02d",
+                            month + 1
+                        ) + "/" + String.format("%02d", day)
+                    )
+            }, year, month, day
         )
-        CustomUtilityField(
-            value = gasReading,
-            onValueChange = { gasReading = it },
-            label = stringResource(R.string.gas_reading_label),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            showError = false,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-        CustomUtilityField(
-            value = waterReading,
-            onValueChange = { waterReading = it },
-            label = stringResource(R.string.water_reading_label),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true,
-            showError = false,
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
-        Button(
-            modifier = Modifier.padding(top = 24.dp),
-            onClick = {
-                if (electricityReading.toDouble() > 0) {
-                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding electricity")
-                    addReading(datePicked, "Electricity", electricityReading.toDouble())
-                }
-                if (gasReading.toDouble() > 0) {
-                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding gas")
-                    addReading(datePicked, "Gas", gasReading.toDouble())
-                }
-                if (waterReading.toDouble() > 0) {
-                    Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding water")
-                    addReading(datePicked, "Water", waterReading.toDouble())
-                }
-                val intent = Intent(context, MainScreenTenantActivity::class.java)
-                intent.putExtra("tenantId", tenantId)
-                context.startActivity(intent)
-            }, shape = RoundedCornerShape(20.dp)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = stringResource(R.string.confirm_send_to_landlord))
+
+            Text(text = "Readings for date: ${datePicked}")
+            Spacer(modifier = Modifier.size(16.dp))
+            OutlinedButton(
+                modifier = Modifier.padding(bottom = 24.dp),
+                onClick = {
+                    datePickerDialog.show()
+                }) {
+                Text(text = stringResource(R.string.choose_date))
+            }
+            CustomUtilityField(
+                value = electricityReading,
+                onValueChange = { electricityReading = it },
+                label = stringResource(R.string.electricity_reading_label),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true,
+                showError = false,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+            CustomUtilityField(
+                value = gasReading,
+                onValueChange = { gasReading = it },
+                label = stringResource(R.string.gas_reading_label),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true,
+                showError = false,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+            CustomUtilityField(
+                value = waterReading,
+                onValueChange = { waterReading = it },
+                label = stringResource(R.string.water_reading_label),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                showError = false,
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+            Button(
+                modifier = Modifier.padding(top = 24.dp),
+                onClick = {
+                    if (electricityReading.toDouble() > 0) {
+                        Log.d(
+                            TenantAddReadingsActivity::class.java.simpleName,
+                            "Adding electricity"
+                        )
+                        addCalculation(datePicked, "Electricity", electricityReading.toDouble())
+                        //addReading(datePicked, "Electricity", electricityReading.toDouble())
+
+                    }
+                    if (gasReading.toDouble() > 0) {
+                        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding gas")
+                        addCalculation(datePicked, "Gas", gasReading.toDouble())
+                        //addReading(datePicked, "Gas", gasReading.toDouble())
+
+                    }
+                    if (waterReading.toDouble() > 0) {
+                        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding water")
+                        addCalculation(datePicked, "Water", waterReading.toDouble())
+                        // addReading(datePicked, "Water", waterReading.toDouble())
+
+                    }
+                    val intent = Intent(context, MainScreenTenantActivity::class.java)
+                    intent.putExtra("tenantId", tenantId)
+                    context.startActivity(intent)
+                }, shape = RoundedCornerShape(20.dp)
+            ) {
+                Text(text = stringResource(R.string.confirm_send_to_landlord))
+            }
+
         }
-
     }
-}
 
-@Preview(showBackground = true, showSystemUi = true, locale = "pl")
-@Composable
-fun TenantAddReadingsPreview() {
+    @Preview(showBackground = true, showSystemUi = true, locale = "pl")
+    @Composable
+    fun TenantAddReadingsPreview() {
 
-    AppartamentyTheme {
-        TenantAddReadingsScreen("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
+        AppartamentyTheme {
+            TenantAddReadingsScreen("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
+        }
     }
-}

@@ -131,7 +131,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
     fun addUtility(
         constant: Boolean,
         name: String,
-        price: Number,
+        price: Double,
         street: String,
         streetNo: String,
         apartmentNo: String,
@@ -383,23 +383,23 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
 
     Button(onClick = {
         addProperty(street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode, city = city)
-        if (electricityPrice.toFloat() > 0) {
-            addUtility(constant = false, name = "Electricity", price = electricityPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (electricityPrice.toDouble() > 0) {
+            addUtility(constant = false, name = "Electricity", price = electricityPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
-        if (electricityPriceConstant.toFloat() > 0) {
-            addUtility(constant = true, name = "Electricity - constant", price = electricityPriceConstant.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (electricityPriceConstant.toDouble() > 0) {
+            addUtility(constant = true, name = "Electricity - constant", price = electricityPriceConstant.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
-        if (gasPrice.toFloat() > 0) {
-            addUtility(constant = false, name = "Gas", price = gasPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (gasPrice.toDouble() > 0) {
+            addUtility(constant = false, name = "Gas", price = gasPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
-        if (gasPriceConstant.toFloat() > 0) {
-            addUtility(constant = true, name = "Gas - constant", price = gasPriceConstant.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (gasPriceConstant.toDouble() > 0) {
+            addUtility(constant = true, name = "Gas - constant", price = gasPriceConstant.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
-        if (waterPrice.toFloat() > 0) {
-            addUtility(constant = false, name = "Water", price = waterPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (waterPrice.toDouble() > 0) {
+            addUtility(constant = false, name = "Water", price = waterPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
-        if (internetPrice.toFloat() > 0) {
-            addUtility(constant = true, name = "Internet", price = internetPrice.toFloat(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
+        if (internetPrice.toDouble() > 0) {
+            addUtility(constant = true, name = "Internet", price = internetPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
         }
     }, shape = RoundedCornerShape(20.dp)) {
         Text(text = stringResource(R.string.confirm))
