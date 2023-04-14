@@ -3,6 +3,7 @@ package com.example.appartamenty
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -35,6 +36,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
         val landlordId = intent.getStringExtra("landlordId")
 
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme

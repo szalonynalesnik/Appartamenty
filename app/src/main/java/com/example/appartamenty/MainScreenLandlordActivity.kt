@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +38,8 @@ class MainScreenLandlordActivity : ComponentActivity() {
         val landlordId = intent.getStringExtra("landlordId")
 
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -206,7 +209,7 @@ fun LandlordChooser(context: Context, landlordId: String) {
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
                             .fillMaxWidth(),
-                        text = "Calculate rent",
+                        text = stringResource(R.string.calculate_rent),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -301,7 +304,7 @@ fun LandlordChooser(context: Context, landlordId: String) {
             ) {
                 Icon(imageVector = Icons.Default.Logout, contentDescription = "Log out")
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = "Log out")
+                Text(text = stringResource(R.string.log_out))
             }
         }
     }

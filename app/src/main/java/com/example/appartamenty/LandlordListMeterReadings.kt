@@ -3,6 +3,7 @@ package com.example.appartamenty
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -16,6 +17,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +33,7 @@ class LandlordListMeterReadings : ComponentActivity() {
         val property = intent.extras?.get("property") as Property
         val landlordId = intent.extras?.getString("landlordId")
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,7 +41,9 @@ class LandlordListMeterReadings : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    if (landlordId != null) {
+                        SetReadingsData(property = property, landlordId = landlordId)
+                    }
                 }
             }
         }
@@ -134,7 +139,7 @@ fun ShowLazyListOfReadings(readingsList: SnapshotStateList<MeterReading?>, landl
 
             ) {
             Text(
-                text = "Past meter readings",
+                text = stringResource(R.string.past_meter_readings),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
@@ -183,17 +188,13 @@ fun ReadingCardItem(reading: MeterReading, landlordId: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = "${reading.date} \n ${reading.utilityName} \n Value: ${reading.value}",
+                text = "${reading.date} \n ${reading.utilityName} \n" + stringResource(R.string.value) + "${reading.value}",
                 textAlign = TextAlign.Center
             )
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
 @Preview(showBackground = true)
 @Composable

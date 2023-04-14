@@ -3,6 +3,7 @@ package com.example.appartamenty
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -52,6 +53,7 @@ class LandlordAddRealEstate : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val landlordId = intent.getStringExtra("landlordId")
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -276,7 +278,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
             .padding(vertical = 16.dp, horizontal = 16.dp)
     ) {
         Text(
-            text = "Utilities",
+            text = stringResource(R.string.utilities),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
@@ -285,7 +287,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
                 .align(Alignment.Start)
         )
         Text(
-            text = "Utilities available in the property",
+            text = stringResource(R.string.utilities_available_in_the_property),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,

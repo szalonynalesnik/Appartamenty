@@ -3,6 +3,7 @@ package com.example.appartamenty
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -16,6 +17,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +37,8 @@ class CalculateRentActivity : ComponentActivity() {
         val tenantId = intent.getStringExtra("tenantId")
 
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+
         setContent {
 
             AppartamentyTheme {
@@ -196,7 +200,7 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 10.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    text = "TOTAL RENT" + String.format("\nTotal: %.2f", calculation.total),
+                    text = stringResource(R.string.total_rent) + String.format("\nTotal: %.2f", calculation.total),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                 )

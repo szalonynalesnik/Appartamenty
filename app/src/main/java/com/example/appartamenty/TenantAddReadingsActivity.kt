@@ -5,6 +5,7 @@ import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,8 @@ class TenantAddReadingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+
         val tenantId = intent.getStringExtra("tenantId")
 
         setContent {
@@ -257,7 +260,7 @@ fun ReadingForm(tenantId: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            Text(text = "Readings for date: ${datePicked}")
+            Text(text = stringResource(R.string.readings_for_date) + "${datePicked}")
             Spacer(modifier = Modifier.size(16.dp))
             OutlinedButton(
                 modifier = Modifier.padding(bottom = 24.dp),

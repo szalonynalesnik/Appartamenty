@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -27,6 +28,8 @@ import com.google.firebase.ktx.Firebase
 class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+
         val tenantId = Firebase.auth.currentUser?.uid
         setContent {
             AppartamentyTheme {
@@ -168,7 +171,7 @@ fun TenantChooser(context: Context, tenantId: String) {
             ) {
                 Icon(imageVector = Icons.Default.Logout, contentDescription = "Log out")
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = "Log out")
+                Text(text = stringResource(R.string.log_out))
             }
         }
 

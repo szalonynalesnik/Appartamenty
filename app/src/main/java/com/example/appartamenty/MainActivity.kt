@@ -45,6 +45,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import android.content.Context
+import android.view.Window
 
 
 class MainActivity : ComponentActivity() {
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
             AppartamentyTheme {
                 // A surface container using the 'background' color from the theme
@@ -303,7 +305,7 @@ fun LoginWelcome() {
                 modifier = Modifier
                     .size(50.dp)
                     .padding(horizontal = 8.dp),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimaryContainer)
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
             )
             Text(
                 text = stringResource(R.string.app_name),

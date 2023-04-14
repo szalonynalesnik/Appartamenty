@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">APPartamenty</string>
+    <string name="app_name" translatable="false">APPartamenty</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="title_activity_register_form" translatable="false">RegisterFormActivity</string>
     <string name="emailaddress">E-mail address</string>
@@ -94,5 +94,15 @@
     <string name="electricity_constant">Electricity [fixed price per month]</string>
     <string name="title_activity_calculate_rent" translatable="false">CalculateRentActivity</string>
     <string name="confirm_send_to_landlord">Confirm and send to landlord</string>
-    <string name="title_activity_landlord_list_meter_readings">LandlordListMeterReadings</string>
+    <string name="title_activity_landlord_list_meter_readings" translatable="false">LandlordListMeterReadings</string>
+    <string name="calculate_rent">Calculate rent</string>
+    <string name="log_out">Log out</string>
+    <string name="total_rent">TOTAL RENT</string>
+    <string name="utilities">Utilities</string>
+    <string name="utilities_available_in_the_property">Utilities available in the property</string>
+    <string name="past_meter_readings">Past meter readings</string>
+    <string name="value">"Value: "</string>
+    <string name="tenants">Tenants</string>
+    <string name="readings_for_date">Readings for date:</string>
+    <string name="your_property">Your property</string>
 </resources>

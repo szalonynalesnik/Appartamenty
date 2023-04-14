@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="utility_meter_readings">Odczyty liczników</string>
     <string name="manage_properties">Zarządzaj nieruchomościami</string>
-    <string name="app_name">APPartamenty</string>
     <string name="prompt_password">Hasło</string>
     <string name="emailaddress">Adres e-mail</string>
     <string name="password">Hasło</string>
@@ -13,9 +13,9 @@
     <string name="haveanaccount">Masz już konto? Zaloguj się</string>
     <string name="donthaveanaccount">Nie masz jeszcze konta? Zarejestruj się</string>
     <string name="reviewformfields">Sprawdź formularz rejestracji</string>
-    <string name="enteremail">Enter email address</string>
-    <string name="enterpassword">Enter password</string>
-    <string name="address">Addres</string>
+    <string name="enteremail">Wprowadź adres email</string>
+    <string name="enterpassword">Wprowadź hasło</string>
+    <string name="address">Adres</string>
     <string name="street">Ulica</string>
     <string name="streetNo">Numer domu</string>
     <string name="aptno">Numer mieszkania</string>
@@ -40,4 +40,14 @@
     <string name="gas_constant">Gaz ziemny [opłata miesięczna]</string>
     <string name="electricity_constant">Prąd [opłata miesięczna]</string>
     <string name="confirm_send_to_landlord">Zatwierdź i wyślij właścicielowi</string>
+    <string name="calculate_rent">Oblicz czynsz</string>
+    <string name="log_out">Wyloguj się</string>
+    <string name="total_rent">ŁĄCZNY CZYNSZ</string>
+    <string name="utilities">Media</string>
+    <string name="utilities_available_in_the_property">Media dostępne w nieruchomości</string>
+    <string name="past_meter_readings">Poprzednie odczyty liczników</string>
+    <string name="value">"Wartość: "</string>
+    <string name="tenants">Lokatorzy</string>
+    <string name="readings_for_date">Odczyt na dzień:</string>
+    <string name="your_property">Twoja nieruchomość</string>
 </resources>
