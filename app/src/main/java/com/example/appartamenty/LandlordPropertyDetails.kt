@@ -165,66 +165,76 @@ fun ShowLazyListOfTenants(
 
     val context = LocalContext.current
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 10.dp, vertical = 10.dp),
-
-        horizontalAlignment = Alignment.Start,
+            .padding(horizontal = 20.dp, vertical = 20.dp),
+        horizontalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = stringResource(R.string.your_property),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-        Text(
-            text = stringResource(R.string.street) + ": ${property.street}",
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Text(
-            text = stringResource(R.string.streetNo) + ": ${property.streetNo}",
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Text(
-            text = stringResource(R.string.aptno) + ": ${property.apartmentNo}",
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Text(
-            text = stringResource(R.string.postcode) + ": ${property.postalCode}",
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Text(
-            text = stringResource(R.string.city) + ": ${property.city}",
-            modifier = Modifier.padding(vertical = 5.dp)
-        )
-        Text(
-            text = stringResource(R.string.tenants),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Normal,
+        Column(
             modifier = Modifier
-                .padding(top = 20.dp, bottom = 10.dp)
-        )
+                .fillMaxSize()
+                .padding(),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(
+                text = stringResource(R.string.your_property),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+            Text(
+                text = stringResource(R.string.street) + ": ${property.street}",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.streetNo) + ": ${property.streetNo}",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.aptno) + ": ${property.apartmentNo}",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.postcode) + ": ${property.postalCode}",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.city) + ": ${property.city}",
+                modifier = Modifier.padding(vertical = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.tenants),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(top = 20.dp, bottom = 10.dp)
+            )
 
-        LazyColumn {
-            itemsIndexed(tenantList) { index, item ->
-                if (item != null) {
-                    TenantCardItem(item)
+            LazyColumn {
+                itemsIndexed(tenantList) { index, item ->
+                    if (item != null) {
+                        TenantCardItem(item)
+                    }
                 }
             }
-        }
-
-        OutlinedButton(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = {
-                val intent = Intent(context, LandlordAddTenantToProperty::class.java)
-                intent.putExtra("propertyId", property.propertyId)
-                intent.putExtra("landlordId", landlordId)
-                context.startActivity(intent)
-            }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")
-            Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-            Text(text = stringResource(R.string.add_tenant))
+            Column(
+                modifier = Modifier.padding(top = 10.dp)
+            )
+            {
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        val intent = Intent(context, LandlordAddTenantToProperty::class.java)
+                        intent.putExtra("propertyId", property.propertyId)
+                        intent.putExtra("landlordId", landlordId)
+                        context.startActivity(intent)
+                    }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")
+                    Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                    Text(text = stringResource(R.string.add_tenant))
+                }
+            }
         }
     }
 }
@@ -233,7 +243,6 @@ fun ShowLazyListOfTenants(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TenantCardItem(tenant: Tenant) {
-    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
