@@ -50,4 +50,10 @@
     <string name="tenants">Lokatorzy</string>
     <string name="readings_for_date">Odczyt na dzień:</string>
     <string name="your_property">Twoja nieruchomość</string>
+    <string name="nice_to_see_you_again">Miło Cię znów widzieć!</string>
+    <string name="welcome">Witaj!</string>
+    <string name="rent_for_date">"Czynsz na dzień: "</string>
+    <string name="total">Kwota</string>
+    <string name="usage">Zużycie</string>
+    <string name="address_of_the_property">Adres nieruchomości</string>
 </resources>

@@ -175,7 +175,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
                 .align(Alignment.Start)
         )
         Text(
-            text = "Address of the property",
+            text = stringResource(R.string.address_of_the_property),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
@@ -318,7 +318,7 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
                 imeAction = ImeAction.Next
             ),
             singleLine = true,
-            leadingIconImageVector = Icons.Default.PropaneTank,
+            leadingIconImageVector = Icons.Default.ElectricBolt,
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             )

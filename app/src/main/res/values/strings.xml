@@ -15,7 +15,7 @@
     <string name="contact_tenants" translatable="false">Contact tenants</string>
     <string name="faultr_reports" translatable="false">Fault reports</string>
     <string name="calendar" translatable="false">Calendar</string>
-    <string name="utility_meter_readings" translatable="false">Utility meter readings</string>
+    <string name="utility_meter_readings">Utility meter readings</string>
     <string name="manage_properties">Manage properties</string>
     <string name="title_activity_main_screen_tenant" translatable="false">MainScreenTenantActivity</string>
     <string name="report_fault" translatable="false">Report a fault</string>
@@ -105,4 +105,10 @@
     <string name="tenants">Tenants</string>
     <string name="readings_for_date">Readings for date:</string>
     <string name="your_property">Your property</string>
+    <string name="nice_to_see_you_again">Nice to see you again!</string>
+    <string name="welcome">Welcome!</string>
+    <string name="rent_for_date">Rent for date:</string>
+    <string name="total">Total</string>
+    <string name="usage">Usage</string>
+    <string name="address_of_the_property">Address of the property</string>
 </resources>

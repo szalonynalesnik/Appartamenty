@@ -120,6 +120,7 @@ fun LandlordChooser(context: Context, landlordId: String) {
                 onClick = {
                     var intent = Intent(context, LandlordListPropertiesActivity::class.java)
                     intent.putExtra("landlordId", landlordId)
+                    intent.putExtra("destination", "list_properties")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
                 }
@@ -152,6 +153,11 @@ fun LandlordChooser(context: Context, landlordId: String) {
             horizontalArrangement = Arrangement.spacedBy(space = 16.dp)
         ) {
             Card(
+                onClick = { var intent = Intent(context, LandlordListPropertiesActivity::class.java)
+                    intent.putExtra("landlordId", landlordId)
+                    intent.putExtra("destination", "meter_readings")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)},
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),
@@ -183,6 +189,11 @@ fun LandlordChooser(context: Context, landlordId: String) {
                 }
             }
             Card(
+                onClick = { var intent = Intent(context, LandlordListPropertiesActivity::class.java)
+                    intent.putExtra("landlordId", landlordId)
+                    intent.putExtra("destination", "calculate_rent")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)},
                 modifier = Modifier
                     .weight(0.5f)
                     .fillMaxSize(),

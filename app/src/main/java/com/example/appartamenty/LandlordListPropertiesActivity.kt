@@ -34,6 +34,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val landlordId = intent.getStringExtra("landlordId")
+        val destination = intent.getStringExtra("destination")
 
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -44,8 +45,8 @@ class LandlordListPropertiesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (landlordId != null) {
-                        SetPropertyData(landlordId)
+                    if (landlordId != null && destination!= null) {
+                        SetPropertyData(landlordId, destination)
                     }
                 }
             }
@@ -55,7 +56,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SetPropertyData(landlordId: String) {
+fun SetPropertyData(landlordId: String, destination: String) {
 
     val propertyList = mutableStateListOf<Property?>()
     // on below line creating variable for freebase database
@@ -90,12 +91,12 @@ fun SetPropertyData(landlordId: String) {
         }
 
     // on below line we are calling method to display UI
-    ShowLazyList(propertyList, landlordId)
+    ShowLazyList(propertyList, landlordId, destination)
 
 }
 
 @Composable
-fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String) {
+fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String, destination: String) {
 
     val context = LocalContext.current
 
@@ -118,7 +119,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String)
         LazyColumn {
             itemsIndexed(propertyList) { index, item ->
                 if (item != null) {
-                    CardItem(item, landlordId)
+                    CardItem(item, landlordId, destination)
                 } else {
                     Text(text = stringResource(R.string.no_properties))
                 }
@@ -140,7 +141,7 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardItem(property: Property, landlordId: String) {
+fun CardItem(property: Property, landlordId: String, destination: String) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -152,9 +153,21 @@ fun CardItem(property: Property, landlordId: String) {
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
-            val intent = Intent(context, LandlordPropertyDetails::class.java)
-            intent.putExtra("property", property).putExtra("landlordId", landlordId)
-            context.startActivity(intent)
+            if (destination == "list_properties") {
+                val intent = Intent(context, LandlordPropertyDetails::class.java)
+                intent.putExtra("property", property).putExtra("landlordId", landlordId)
+                context.startActivity(intent)
+            }
+            else if (destination == "meter_readings") {
+                val intent = Intent(context, LandlordListMeterReadings::class.java)
+                intent.putExtra("property", property).putExtra("landlordId", landlordId)
+                context.startActivity(intent)
+            }
+            else if (destination == "calculate_rent") {
+                val intent = Intent(context, CalculateRentActivity::class.java)
+                intent.putExtra("property", property).putExtra("landlordId", landlordId)
+                context.startActivity(intent)
+            }
         }
     ) {
         Column(
@@ -177,6 +190,6 @@ fun CardItem(property: Property, landlordId: String) {
 @Composable
 fun DefaultPreview() {
     AppartamentyTheme {
-        SetPropertyData(landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2")
+        SetPropertyData(landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2", "list_properties")
     }
 }

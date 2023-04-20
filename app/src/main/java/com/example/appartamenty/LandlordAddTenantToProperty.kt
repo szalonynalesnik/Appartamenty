@@ -224,7 +224,7 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
         )
         Button(
             onClick = {
-                addTenant(firstName, lastName, email, rent.toFloat())
+                addTenant(firstName, lastName, email, rent.toDouble())
                 val intent = Intent(context, LandlordListPropertiesActivity::class.java)
                 intent.putExtra("landlordId", landlordId)
                 context.startActivity(intent)

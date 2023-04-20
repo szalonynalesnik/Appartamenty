@@ -1,6 +1,7 @@
 package com.example.appartamenty
 
 import android.annotation.SuppressLint
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Tenant
 import com.example.appartamenty.data.Utility
 import com.example.appartamenty.data.UtilityPrice
@@ -29,6 +31,7 @@ import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.Date
 
 @ExperimentalCoroutinesApi
 class CalculateRentActivity : ComponentActivity() {
@@ -48,7 +51,11 @@ class CalculateRentActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (tenantId != null) {
-                        SetRentData(tenantId)
+                        SetRentDataForTenant(tenantId)
+                    }
+                    else if (intent.extras?.get("property") != null){
+                        val property = intent.extras?.get("property") as Property
+                        SetRentDataForLandlord(property)
                     }
                 }
             }
@@ -58,7 +65,7 @@ class CalculateRentActivity : ComponentActivity() {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SetRentData(tenantId: String) {
+fun SetRentDataForTenant(tenantId: String) {
 
     val calculationsList = mutableStateListOf<UtilityPrice?>()
     var totalRent: Double = 0.0
@@ -74,7 +81,8 @@ fun SetRentData(tenantId: String) {
             }
             val propertyId = document.get("propertyId")
             // retrieving utilities assigned to property
-            db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId).orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
+            db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
+                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
                 .get()
                 .addOnSuccessListener { calculations ->
                     Log.d(
@@ -127,12 +135,104 @@ fun SetRentData(tenantId: String) {
 
 }
 
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun SetRentDataForLandlord(property: Property) {
+
+    val calculationsList = mutableStateListOf<UtilityPrice?>()
+    var totalRent: Double = 0.0
+
+    val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    val propertyId = property.propertyId
+    // retrieving utilities assigned to property
+
+    db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
+        .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
+        .get()
+        .addOnSuccessListener { calculations ->
+            Log.d(
+                "SUCCESS"::class.java.simpleName,
+                "Calculations retrieved successfully"
+            )
+            for (calculation in calculations) {
+                val calculation = calculation.toObject(UtilityPrice::class.java)
+                calculationsList.add(calculation)
+                totalRent += calculation.total
+                // retrieving meter readings for each utility
+            }
+
+            db.collection("utilities").whereEqualTo("propertyId", propertyId)
+                .whereEqualTo("constant", true).get()
+                .addOnSuccessListener { constantUtilities ->
+                    for (utility in constantUtilities) {
+                        val constantUtility = utility.toObject(Utility::class.java)
+                        calculationsList.add(
+                            UtilityPrice(
+                                constantUtility.name!!,
+                                1.0,
+                                0.0,
+                                constantUtility.price,
+                                constantUtility.price,
+                                System.currentTimeMillis(),
+                                propertyId.toString()
+                            )
+                        )
+                        totalRent += constantUtility.price
+                    }
+
+                    db.collection("tenants").whereEqualTo("propertyId", propertyId).get()
+                        .addOnSuccessListener{ documents ->
+                            for (document in documents) {
+                                val tenant = document.toObject(Tenant::class.java)
+                                totalRent += tenant.rent!!
+                            }
+                            calculationsList.sortedBy { "name" }
+                            calculationsList.add(
+                                UtilityPrice(
+                                    "Total rent",
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    totalRent,
+                                    System.currentTimeMillis(),
+                                    propertyId.toString()
+                                )
+                            )
+                        }.addOnFailureListener {
+                            calculationsList.sortedBy { "name" }
+                            calculationsList.add(
+                                UtilityPrice(
+                                    "Total rent",
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    totalRent,
+                                    System.currentTimeMillis(),
+                                    propertyId.toString()
+                                )
+                            )
+                        }
+
+
+                }
+
+        }
+
+    ShowLazyListOfCalculations(calculationsList)
+
+
+}
+
 @Composable
 fun ShowLazyListOfCalculations(
     calculationsList: SnapshotStateList<UtilityPrice?>
 ) {
 
     // val context = LocalContext.current
+
+    val sdf = SimpleDateFormat("dd/MM/yyyy")
+    val currentDate = sdf.format(Date())
 
     Column(
         modifier = Modifier
@@ -142,7 +242,7 @@ fun ShowLazyListOfCalculations(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Rent",
+            text = stringResource(R.string.rent_for_date) + currentDate,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
@@ -200,7 +300,10 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 10.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    text = stringResource(R.string.total_rent) + String.format("\nTotal: %.2f", calculation.total),
+                    text = stringResource(R.string.total_rent) + "\n" + String.format(
+                        "%.2f",
+                        calculation.total
+                    ),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                 )
@@ -231,8 +334,8 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 10.dp),
-                    text = calculation.name + String.format(
-                        "\nTotal: %.2f",
+                    text = calculation.name + "\n" + stringResource(R.string.total) + String.format(
+                        ": %.2f",
                         calculation.total
                     ),
                     textAlign = TextAlign.Center,
@@ -268,9 +371,12 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                         .fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 10.dp),
                     text = calculation.name + String.format(
-                        "\nUsage: %.3f",
+                        "\n" + stringResource(R.string.usage) + ": %.3f",
                         (calculation.lastReading - calculation.previousReading)
-                    ) + String.format("\nTotal: %.2f", calculation.total),
+                    ) + "\n" + stringResource(R.string.total) + String.format(
+                        ": %.2f",
+                        calculation.total
+                    ),
                     textAlign = TextAlign.Center
                 )
 
@@ -283,6 +389,6 @@ fun CalculationCardItem(calculation: UtilityPrice) {
 @Composable
 fun CalculateRentPreview() {
     AppartamentyTheme {
-        SetRentData("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
+        SetRentDataForTenant("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
     }
 }

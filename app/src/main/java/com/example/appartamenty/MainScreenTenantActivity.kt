@@ -127,7 +127,14 @@ fun TenantChooser(context: Context, tenantId: String) {
                 border = BorderStroke(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                onClick = {
+                    val intent = Intent(context, CalculateRentActivity::class.java)
+                    intent.putExtra("tenantId", tenantId)
+                    Log.d(MainScreenTenantActivity::class.java.simpleName, "Tenant ID passed on: $tenantId")
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                }
             ) {
                 Column(
                     modifier = Modifier
@@ -147,7 +154,7 @@ fun TenantChooser(context: Context, tenantId: String) {
                         modifier = Modifier
                             .padding(vertical = 10.dp, horizontal = 10.dp)
                             .fillMaxWidth(),
-                        text = "Rent",
+                        text = stringResource(R.string.rent),
                         textAlign = TextAlign.Center
                     )
                 }

@@ -121,7 +121,7 @@ fun RegisterWelcome() {
             )
         }
         Text(
-            text = "Welcome!",
+            text = stringResource(R.string.welcome),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier

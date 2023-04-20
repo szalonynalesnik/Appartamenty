@@ -316,7 +316,7 @@ fun LoginWelcome() {
             )
         }
         Text(
-            text = "Nice to see you again!",
+            text = stringResource(R.string.nice_to_see_you_again),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier
                 .fillMaxWidth(),
