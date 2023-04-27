@@ -126,7 +126,6 @@ fun AddressEditForm(
             landlordId = landlordId,
             propertyId = propertyId
         )
-        // add new property belonging to landlord to the database
         database.collection("properties").document(propertyId).set(updatedProperty)
             .addOnSuccessListener { doc ->
                 Log.d(
@@ -146,6 +145,7 @@ fun AddressEditForm(
             .padding(vertical = 16.dp, horizontal = 16.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = stringResource(R.string.edit_address),
@@ -153,7 +153,7 @@ fun AddressEditForm(
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
-                .padding(bottom = 8.dp)
+                .padding(bottom = 16.dp)
                 .align(Alignment.Start)
         )
 
@@ -269,7 +269,7 @@ fun AddressEditForm(
                 .padding(bottom = 16.dp)
                 .fillMaxWidth(),
             onClick = {
-                val intent = Intent(context, LandlordListUtilities::class.java)
+                val intent = Intent(context, LandlordListTenantsActivity::class.java)
                 intent.putExtra("landlordId", landlordId)
                 intent.putExtra("destination", destination)
                 intent.putExtra("property", existingProperty)

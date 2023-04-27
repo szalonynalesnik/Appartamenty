@@ -148,7 +148,66 @@ fun UtilityEditForm(
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        when (existingUtility.name) {
+            "Gas" -> Text(
+                text = stringResource(R.string.gas),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+
+            "Gas - constant" -> Text(
+                text = stringResource(R.string.gas_constant),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+
+            "Internet" -> Text(
+                text = stringResource(R.string.internet),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+            "Electricity" -> Text(
+                text = stringResource(R.string.electricity),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+            "Electricity - constant" -> Text(
+                text = stringResource(R.string.electricity_constant),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+            "Water" -> Text(
+                text = stringResource(R.string.water),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .align(Alignment.Start)
+            )
+        }
         OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = price,
             onValueChange = { price = it },
             label = { Text(text = stringResource(R.string.value)) },
@@ -165,10 +224,11 @@ fun UtilityEditForm(
                 if (price.toDouble() > 0) {
                     editUtility(price.toDouble())
                 }
-            }, shape = RoundedCornerShape(20.dp))
+            }, shape = RoundedCornerShape(20.dp)
+        )
 
         {
-        Text(text = stringResource(R.string.confirm))
+            Text(text = stringResource(R.string.confirm))
         }
     }
 

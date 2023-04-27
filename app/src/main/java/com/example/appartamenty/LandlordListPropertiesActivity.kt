@@ -46,7 +46,7 @@ class LandlordListPropertiesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (landlordId != null && destination!= null) {
+                    if (landlordId != null && destination != null) {
                         SetPropertyData(landlordId, destination)
                     }
                 }
@@ -60,41 +60,32 @@ class LandlordListPropertiesActivity : ComponentActivity() {
 fun SetPropertyData(landlordId: String, destination: String) {
 
     val propertyList = mutableStateListOf<Property?>()
-    // on below line creating variable for freebase database
-    // and database reference.
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    // on below line getting data from our database
     db.collection("properties").whereEqualTo("landlordId", landlordId).get()
         .addOnSuccessListener { queryDocumentSnapshots ->
-            // after getting the data we are calling
-            // on success method
-            // and inside this method we are checking
-            // if the received query snapshot is empty or not.
+
             if (!queryDocumentSnapshots.isEmpty) {
-                // if the snapshot is not empty we are
-                // hiding our progress bar and adding
-                // our data in a list.
                 val list = queryDocumentSnapshots.documents
                 for (d in list) {
-                    // after getting this list we are passing that
-                    // list to our object class.
+
                     val c: Property? = d.toObject(Property::class.java)
                     if (c != null) {
                         c.propertyId = d.id
                     }
-                    // and we will pass this object class inside
-                    // our arraylist which we have created for list view.
                     propertyList.add(c)
                 }
             }
         }
-    // on below line we are calling method to display UI
     ShowLazyList(propertyList, landlordId, destination)
 }
 
 @Composable
-fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String, destination: String) {
+fun ShowLazyList(
+    propertyList: SnapshotStateList<Property?>,
+    landlordId: String,
+    destination: String
+) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -119,16 +110,18 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String,
                 }
             }
         }
-        OutlinedButton(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = {
-                val intent = Intent(context, LandlordAddRealEstate::class.java)
-                intent.putExtra("landlordId", landlordId)
-                context.startActivity(intent)
-            }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
-            Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-            Text(text = stringResource(R.string.add_property))
+        if (destination == "list_properties") {
+            OutlinedButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    val intent = Intent(context, LandlordAddRealEstate::class.java)
+                    intent.putExtra("landlordId", landlordId)
+                    context.startActivity(intent)
+                }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add new property")
+                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                Text(text = stringResource(R.string.add_property))
+            }
         }
     }
 }
@@ -151,13 +144,11 @@ fun CardItem(property: Property, landlordId: String, destination: String) {
                 val intent = Intent(context, LandlordPropertyDetails::class.java)
                 intent.putExtra("property", property).putExtra("landlordId", landlordId)
                 context.startActivity(intent)
-            }
-            else if (destination == "meter_readings") {
+            } else if (destination == "meter_readings") {
                 val intent = Intent(context, LandlordListMeterReadings::class.java)
                 intent.putExtra("property", property).putExtra("landlordId", landlordId)
                 context.startActivity(intent)
-            }
-            else if (destination == "calculate_rent") {
+            } else if (destination == "calculate_rent") {
                 val intent = Intent(context, CalculateRentActivity::class.java)
                 intent.putExtra("property", property).putExtra("landlordId", landlordId)
                 context.startActivity(intent)
@@ -182,18 +173,25 @@ fun CardItem(property: Property, landlordId: String, destination: String) {
                     textAlign = TextAlign.Center
                 )
             }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                IconButton(
-                    onClick = {
-                        val intent = Intent(context, LandlordEditProperty::class.java)
-                        intent.putExtra("property", property).putExtra("landlordId", landlordId).putExtra("destination", destination)
-                        context.startActivity(intent)
-                    }
+
+            if (destination == "list_properties") {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
                 ) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Add new property")
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(context, LandlordEditProperty::class.java)
+                            intent.putExtra("property", property).putExtra("landlordId", landlordId)
+                                .putExtra("destination", destination)
+                            context.startActivity(intent)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Add new property"
+                        )
+                    }
                 }
             }
         }

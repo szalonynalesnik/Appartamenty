@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -112,16 +113,39 @@ fun TenantEditForm(
     var lastName by remember { mutableStateOf(existingTenant.lastName!!) }
     var rent by remember { mutableStateOf(existingTenant.rent!!.toString()) }
 
-    var updatedTenant : Tenant
+    var updatedTenant: Tenant
 
     fun editTenant(
         firstName: String,
         lastName: String,
         rent: Double
     ) {
-        updatedTenant = Tenant(firstName = firstName, lastName = lastName, rent = rent, tenantId = existingTenant.tenantId, propertyId = existingTenant.propertyId, email = existingTenant.email)
+        updatedTenant = Tenant(
+            firstName = firstName,
+            lastName = lastName,
+            rent = rent,
+            tenantId = existingTenant.tenantId,
+            propertyId = existingTenant.propertyId,
+            email = existingTenant.email
+        )
         database.collection("tenants").document(existingTenant.tenantId!!)
             .set(updatedTenant)
+            .addOnSuccessListener { doc ->
+                Log.d(
+                    MainActivity::class.java.simpleName,
+                    "Updating tenant successful"
+                )
+                val intent = Intent(context, LandlordListTenantsActivity::class.java)
+                intent.putExtra("landlordId", landlordId)
+                    .putExtra("destination", destination)
+                    .putExtra("property", property)
+                context.startActivity(intent)
+            }
+    }
+
+    fun deleteTenant(
+    ) {
+        database.collection("tenants").document(existingTenant.tenantId!!).delete()
             .addOnSuccessListener { doc ->
                 Log.d(
                     MainActivity::class.java.simpleName,
@@ -205,10 +229,23 @@ fun TenantEditForm(
                 if (firstName.isNotBlank() && lastName.isNotBlank()) {
                     editTenant(firstName, lastName, rent.toDouble())
                 }
-            }, shape = RoundedCornerShape(20.dp))
+            }, shape = RoundedCornerShape(20.dp)
+        )
 
         {
             Text(text = stringResource(R.string.confirm))
+        }
+        Button(
+            modifier = Modifier
+                .padding(top = 16.dp),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
+            onClick = {
+                deleteTenant()
+            }, shape = RoundedCornerShape(20.dp)
+        )
+
+        {
+            Text(text = stringResource(R.string.delete_tenant))
         }
     }
 

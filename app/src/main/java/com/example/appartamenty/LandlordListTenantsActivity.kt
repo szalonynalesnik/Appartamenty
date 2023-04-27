@@ -139,6 +139,25 @@ fun ShowLazyListOfTenants(
             }
         }
 
+        Column(
+            modifier = Modifier.padding(top = 10.dp)
+        )
+        {
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    val intent = Intent(context, LandlordAddTenantToProperty::class.java)
+                    intent.putExtra("property", property)
+                    intent.putExtra("destination", destination)
+                    intent.putExtra("landlordId", landlordId)
+                    context.startActivity(intent)
+                }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")
+                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                Text(text = stringResource(R.string.add_tenant))
+            }
+        }
+
         OutlinedButton(
             modifier = Modifier
                 .padding(vertical = 16.dp, horizontal = 16.dp),
@@ -199,7 +218,7 @@ fun TenantCardItem(tenant: Tenant, landlordId: String, destination: String, prop
             IconButton(
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    val intent = Intent(context, LandlordEditUtility::class.java)
+                    val intent = Intent(context, LandlordEditTenantActivity::class.java)
                     intent.putExtra("tenant", tenant).putExtra("landlordId", landlordId)
                         .putExtra("destination", destination).putExtra("property", property)
                     context.startActivity(intent)

@@ -55,66 +55,6 @@ class LandlordPropertyDetails : ComponentActivity() {
     }
 }
 
-//@SuppressLint("CoroutineCreationDuringComposition")
-//@Composable
-//fun ShowProperty(property: Property, landlordId: String) {
-//
-//    Log.d(LandlordPropertyDetails::class.java.simpleName, "Object: ${property.street}")
-//
-//    val context = LocalContext.current
-//    Column(
-//        modifier = Modifier
-//            .padding(vertical = 16.dp, horizontal = 16.dp)
-//            .fillMaxWidth(),
-//        horizontalAlignment = Alignment.Start,
-//    ) {
-//        Text(
-//            text = stringResource(R.string.street) + ": ${property.street}",
-//            modifier = Modifier.padding(vertical = 10.dp)
-//        )
-//        Text(
-//            text = stringResource(R.string.streetNo) + ": ${property.streetNo}",
-//            modifier = Modifier.padding(vertical = 10.dp)
-//        )
-//        Text(
-//            text = stringResource(R.string.aptno) + ": ${property.apartmentNo}",
-//            modifier = Modifier.padding(vertical = 10.dp)
-//        )
-//        Text(
-//            text = stringResource(R.string.postcode) + ": ${property.postalCode}",
-//            modifier = Modifier.padding(vertical = 10.dp)
-//        )
-//        Text(
-//            text = stringResource(R.string.city) + ": ${property.city}",
-//            modifier = Modifier.padding(vertical = 10.dp)
-//        )
-//        Column(
-//            modifier = Modifier
-//                .padding(vertical = 16.dp),
-//        ) {
-//            Text(
-//                text = stringResource(R.string.tenants),
-//                style = MaterialTheme.typography.titleLarge,
-//                color = MaterialTheme.colorScheme.onBackground,
-//                fontWeight = FontWeight.Normal,
-//                modifier = Modifier
-//                    .padding(bottom = 8.dp)
-//            )
-//            OutlinedButton(
-//                modifier = Modifier.padding(top = 16.dp),
-//                onClick = {
-//                    val intent = Intent(context, LandlordAddTenantToProperty::class.java)
-//                    intent.putExtra("propertyId", property.propertyId)
-//                    intent.putExtra("landlordId", landlordId)
-//                    context.startActivity(intent)
-//                }) {
-//                Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")
-//                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-//                Text(text = stringResource(R.string.add_tenant))
-//            }
-//        }
-//    }
-//}
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -218,23 +158,7 @@ fun ShowLazyListOfTenants(
                     }
                 }
             }
-            Column(
-                modifier = Modifier.padding(top = 10.dp)
-            )
-            {
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        val intent = Intent(context, LandlordAddTenantToProperty::class.java)
-                        intent.putExtra("propertyId", property.propertyId)
-                        intent.putExtra("landlordId", landlordId)
-                        context.startActivity(intent)
-                    }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add tenant")
-                    Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                    Text(text = stringResource(R.string.add_tenant))
-                }
-            }
+
         }
     }
 }

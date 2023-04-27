@@ -22,7 +22,7 @@
     <string name="postcode">Kod pocztowy</string>
     <string name="city">Miasto</string>
     <string name="confirm">Zatwierdź i zapisz</string>
-    <string name="electricity">Prąd [zł//kWh]</string>
+    <string name="electricity">Prąd [zł/kWh]</string>
     <string name="gas">Gaz ziemny [zł/m3]</string>
     <string name="internet">Internet [miesięcznie]</string>
     <string name="water">Woda [zł/m3]</string>
@@ -46,7 +46,7 @@
     <string name="utilities">Media</string>
     <string name="utilities_available_in_the_property">Media dostępne w nieruchomości</string>
     <string name="past_meter_readings">Poprzednie odczyty liczników</string>
-    <string name="value">"Wartość: "</string>
+    <string name="value">Wartość</string>
     <string name="tenants">Lokatorzy</string>
     <string name="readings_for_date">Odczyt na dzień:</string>
     <string name="your_property">Twoja nieruchomość</string>
@@ -64,4 +64,7 @@
     <string name="edit_address">Edytuj adres</string>
     <string name="edit_tenant">Edytuj informacje o lokatorze</string>
     <string name="back_to_property_list">Wróć do szczegółów nieruchomości</string>
+    <string name="delete_tenant">Usuń lokatora</string>
+    <string name="per_m3">za m3</string>
+    <string name="per_kwh">za kWh</string>
 </resources>

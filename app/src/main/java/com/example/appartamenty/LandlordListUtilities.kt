@@ -80,7 +80,7 @@ fun SetUtilityData(landlordId: String, property: Property, destination: String) 
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     // on below line getting data from our database
-    db.collection("utilities").whereEqualTo("propertyId", property.propertyId).get()
+    db.collection("utilities").whereEqualTo("propertyId", property.propertyId).orderBy("name").get()
         .addOnSuccessListener { queryDocumentSnapshots ->
             // after getting the data we are calling
             // on success method
@@ -108,11 +108,21 @@ fun SetUtilityData(landlordId: String, property: Property, destination: String) 
             }
 
         }
-    ShowLazyListOfUtilities(utilities = utilityList, landlordId = landlordId, destination = destination, property)
+    ShowLazyListOfUtilities(
+        utilities = utilityList,
+        landlordId = landlordId,
+        destination = destination,
+        property
+    )
 }
 
 @Composable
-fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: String, destination: String, property: Property) {
+fun ShowLazyListOfUtilities(
+    utilities: SnapshotStateList<Utility?>,
+    landlordId: String,
+    destination: String,
+    property: Property
+) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -152,7 +162,10 @@ fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: 
                 modifier = Modifier
                     .width(8.dp)
             )
-            Text(text = stringResource(R.string.back_to_property_list), textAlign = TextAlign.Center)
+            Text(
+                text = stringResource(R.string.back_to_property_list),
+                textAlign = TextAlign.Center
+            )
         }
     }
 
@@ -173,7 +186,7 @@ fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, p
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
 
-    ) {
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -184,46 +197,109 @@ fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, p
                 modifier = Modifier
                     .weight(4f)
             ) {
-                if (utility.constant == true) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = utility.name + "\n" +  String.format(
-                            "%.3f",
-                            utility.price
-                        ) + " PLN " + stringResource(R.string.per_month),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                else{
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = utility.name + "\n" + String.format(
-                            "%.3f",
-                            utility.price
-                        ) + " PLN " + stringResource(R.string.per_unit),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                when (utility.name) {
+                    "Gas - constant" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = stringResource(R.string.gas_constant) + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ) + " PLN",
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-            }
-            IconButton(
-                modifier = Modifier.weight(1f),
-                onClick = {
-                    val intent = Intent(context, LandlordEditUtility::class.java)
-                    intent.putExtra("utility", utility).putExtra("landlordId", landlordId).putExtra("destination", destination).putExtra("property", property)
-                    context.startActivity(intent)
+                    "Electricity - constant" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = stringResource(R.string.electricity_constant) + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ) + " PLN ",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    "Internet" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = utility.name + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ) + " PLN ",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    "Gas" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = stringResource(R.string.gas) + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    "Water" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = stringResource(R.string.water) + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    "Electricity" -> {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            text = stringResource(R.string.electricity) + "\n" + String.format(
+                                "%.3f",
+                                utility.price
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit utility")
-            }
+                IconButton(
+                    onClick = {
+                        val intent = Intent(context, LandlordEditUtility::class.java)
+                        intent.putExtra("utility", utility).putExtra("landlordId", landlordId)
+                            .putExtra("destination", destination).putExtra("property", property)
+                        context.startActivity(intent)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit utility"
+                    )
 
+                }
+            }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -239,6 +315,6 @@ fun LandlordListUtilitiesPreview() {
     )
 
     AppartamentyTheme {
-        SetUtilityData("Pth5PB4PlYSxtb6vYX4MVZRmen52", property,"list_properties")
+        SetUtilityData("Pth5PB4PlYSxtb6vYX4MVZRmen52", property, "list_properties")
     }
 }

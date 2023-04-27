@@ -101,7 +101,7 @@
     <string name="utilities">Utilities</string>
     <string name="utilities_available_in_the_property">Utilities available in the property</string>
     <string name="past_meter_readings">Past meter readings</string>
-    <string name="value">"Value: "</string>
+    <string name="value">"Value "</string>
     <string name="tenants">Tenants</string>
     <string name="readings_for_date">Readings for date:</string>
     <string name="your_property">Your property</string>
@@ -124,4 +124,7 @@
     <string name="title_activity_landlord_edit_tenant" translatable="false">LandlordEditTenantActivity</string>
     <string name="edit_tenant">Edit tenant details</string>
     <string name="back_to_property_list">Go back to property details</string>
+    <string name="delete_tenant">Delete tenant</string>
+    <string name="per_m3">per m3</string>
+    <string name="per_kwh">per kWh</string>
 </resources>

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.composables.CustomOutlinedTextField
 import com.example.appartamenty.data.Landlord
+import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Tenant
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -52,8 +53,10 @@ class LandlordAddTenantToProperty : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val propertyId = intent.getStringExtra("propertyId")
+        val property = intent.extras?.get("property") as Property
         val landlordId = intent.getStringExtra("landlordId")
+        val destination = intent.getStringExtra("destination")
+
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
@@ -63,9 +66,7 @@ class LandlordAddTenantToProperty : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (propertyId != null && landlordId != null) {
-                        AddTenantForm(auth, propertyId, landlordId)
-                    }
+                        AddTenantForm(auth, property, landlordId!!, destination!!)
                 }
             }
         }
@@ -73,10 +74,11 @@ class LandlordAddTenantToProperty : ComponentActivity() {
 }
 
 @Composable
-fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
+fun AddTenantForm(auth: FirebaseAuth, property: Property, landlordId: String, destination: String) {
 
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -120,7 +122,7 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
 
                 var tenantId = auth.currentUser?.uid
                 Log.d(LandlordAddTenantToProperty::class.java.simpleName, "Tenant ID: $tenantId")
-                val tenant = Tenant(firstName, lastName, email, rent.toDouble(), propertyId)
+                val tenant = Tenant(firstName, lastName, email, rent.toDouble(), property.propertyId)
                 val handle = database.collection("tenants").document(tenantId.toString()).set(tenant)
                 handle.addOnSuccessListener {
                     Log.d(
@@ -135,14 +137,17 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
                     }
                 }
                 auth.sendPasswordResetEmail(email)
+
+                val intent = Intent(context, LandlordListTenantsActivity::class.java)
+                intent.putExtra("property", property)
+                intent.putExtra("destination", destination)
+                intent.putExtra("landlordId", landlordId)
+                context.startActivity(intent)
             }
 
         }
 
     }
-
-    val context = LocalContext.current
-
 
     Column(
         modifier = Modifier
@@ -249,7 +254,18 @@ fun AddTenantForm(auth: FirebaseAuth, propertyId: String, landlordId: String) {
 @Preview(showBackground = true, showSystemUi = true, locale = "pl")
 @Composable
 fun AddTenantsPreview() {
+
+    val property = Property(
+        "70xF0AwhddGHRuSGYT7L",
+        "Jozefa Rostafinskiego",
+        "16",
+        "17",
+        "50-247",
+        "Wroclaw",
+        "Pth5PB4PlYSxtb6vYX4MVZRmen52"
+    )
+
     AppartamentyTheme {
-        AddTenantForm(Firebase.auth, "7YZpsyr1ze4UWTAt0vDe", landlordId = "53TtHZYOTBZZSP8GG6RrqjgO5DC2")
+        AddTenantForm(Firebase.auth, property, landlordId = "53TtHZYOTBZZSP8GG6RrqjgO5DC2", "list_properties")
     }
 }
