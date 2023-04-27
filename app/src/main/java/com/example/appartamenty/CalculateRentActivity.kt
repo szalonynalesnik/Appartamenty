@@ -188,17 +188,19 @@ fun SetRentDataForLandlord(property: Property) {
                                 totalRent += tenant.rent!!
                             }
                             calculationsList.sortedBy { "name" }
-                            calculationsList.add(
-                                UtilityPrice(
-                                    "Total rent",
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    totalRent,
-                                    System.currentTimeMillis(),
-                                    propertyId.toString()
-                                )
+                            var newTotalRent = UtilityPrice(
+                                name ="Total rent",
+                                lastReading = 0.0,
+                                previousReading = 0.0,
+                                pricePerUnit =0.0,
+                                total = totalRent,
+                                timestamp = System.currentTimeMillis(),
+                                propertyId = propertyId.toString()
                             )
+                            calculationsList.add(
+                                newTotalRent
+                            )
+                            db.collection("total_rents").add(newTotalRent)
                         }.addOnFailureListener {
                             calculationsList.sortedBy { "name" }
                             calculationsList.add(

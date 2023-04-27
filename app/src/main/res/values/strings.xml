@@ -120,4 +120,8 @@
     <string name="title_activity_landlord_edit_utility" translatable="false">LandlordEditUtility</string>
     <string name="edit_utility">Edit utility</string>
     <string name="edit_address">Edit address</string>
+    <string name="title_activity_landlord_list_tenants" translatable="false">LandlordListTenantsActivity</string>
+    <string name="title_activity_landlord_edit_tenant" translatable="false">LandlordEditTenantActivity</string>
+    <string name="edit_tenant">Edit tenant details</string>
+    <string name="back_to_property_list">Go back to property details</string>
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,11 +48,10 @@ import com.example.appartamenty.data.Utility
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.firestore.FirebaseFirestore
 
-class LandlordListUtilities : ComponentActivity() {
+class LandlordListTenantsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val landlordId = intent.getStringExtra("landlordId")
         val destination = intent.getStringExtra("destination")
-
         val property = intent.extras?.get("property") as Property
 
         super.onCreate(savedInstanceState)
@@ -64,7 +64,7 @@ class LandlordListUtilities : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SetUtilityData(landlordId!!, property, destination!!)
+                    SetTenantData(landlordId!!, property, destination!!)
                 }
             }
         }
@@ -73,47 +73,48 @@ class LandlordListUtilities : ComponentActivity() {
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SetUtilityData(landlordId: String, property: Property, destination: String) {
-    val utilityList = mutableStateListOf<Utility?>()
-    // on below line creating variable for freebase database
-    // and database reference.
+fun SetTenantData(landlordId: String, property: Property, destination: String) {
+    val tenantList = mutableStateListOf<Tenant?>()
+
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    // on below line getting data from our database
-    db.collection("utilities").whereEqualTo("propertyId", property.propertyId).get()
+    db.collection("tenants").whereEqualTo("propertyId", property.propertyId).get()
         .addOnSuccessListener { queryDocumentSnapshots ->
-            // after getting the data we are calling
-            // on success method
-            // and inside this method we are checking
-            // if the received query snapshot is empty or not.
+
             if (!queryDocumentSnapshots.isEmpty) {
-                // if the snapshot is not empty we are
-                // hiding our progress bar and adding
-                // our data in a list.
+
                 val list = queryDocumentSnapshots.documents
                 for (d in list) {
-                    // after getting this list we are passing that
-                    // list to our object class.
-                    val c: Utility? = d.toObject(Utility::class.java)
-                    if (c != null) {
-                        c.utilityId = d.id
-                    }
-                    // and we will pass this object class inside
-                    // our arraylist which we have created for list view.
-                    utilityList.add(c)
-                }
-                // on below line we are calling method to display UI
 
+                    val c: Tenant? = d.toObject(Tenant::class.java)
+                    if (c != null) {
+                        c.tenantId = d.id
+                    }
+
+                    tenantList.add(c)
+                }
 
             }
 
         }
-    ShowLazyListOfUtilities(utilities = utilityList, landlordId = landlordId, destination = destination, property)
+    ShowLazyListOfTenants(
+        tenants = tenantList,
+        landlordId = landlordId,
+        destination = destination,
+        property = property
+    )
 }
 
 @Composable
-fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: String, destination: String, property: Property) {
+fun ShowLazyListOfTenants(
+    tenants: SnapshotStateList<Tenant?>,
+    landlordId: String,
+    destination: String,
+    property: Property
+) {
+
     val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,7 +123,7 @@ fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(R.string.utilities),
+            text = stringResource(R.string.tenants),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Normal,
@@ -131,12 +132,13 @@ fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: 
                 .align(Alignment.Start)
         )
         LazyColumn {
-            itemsIndexed(utilities) { index, item ->
+            itemsIndexed(tenants) { index, item ->
                 if (item != null) {
-                    UtilityCardItem(item, landlordId, destination, property)
+                    TenantCardItem(item, landlordId, destination, property)
                 }
             }
         }
+
         OutlinedButton(
             modifier = Modifier
                 .padding(vertical = 16.dp, horizontal = 16.dp),
@@ -161,7 +163,7 @@ fun ShowLazyListOfUtilities(utilities: SnapshotStateList<Utility?>, landlordId: 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, property: Property) {
+fun TenantCardItem(tenant: Tenant, landlordId: String, destination: String, property: Property) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -173,7 +175,7 @@ fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, p
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
 
-    ) {
+        ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -184,41 +186,26 @@ fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, p
                 modifier = Modifier
                     .weight(4f)
             ) {
-                if (utility.constant == true) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = utility.name + "\n" +  String.format(
-                            "%.3f",
-                            utility.price
-                        ) + " PLN " + stringResource(R.string.per_month),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                else{
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp, horizontal = 10.dp),
-                        text = utility.name + "\n" + String.format(
-                            "%.3f",
-                            utility.price
-                        ) + " PLN " + stringResource(R.string.per_unit),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 10.dp),
+                    text = tenant.firstName + " " + tenant.lastName + "\n" +
+                            stringResource(R.string.rent) + ": " + tenant.rent,
+                    textAlign = TextAlign.Center
+                )
 
             }
             IconButton(
                 modifier = Modifier.weight(1f),
                 onClick = {
                     val intent = Intent(context, LandlordEditUtility::class.java)
-                    intent.putExtra("utility", utility).putExtra("landlordId", landlordId).putExtra("destination", destination).putExtra("property", property)
+                    intent.putExtra("tenant", tenant).putExtra("landlordId", landlordId)
+                        .putExtra("destination", destination).putExtra("property", property)
                     context.startActivity(intent)
                 }
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit utility")
+                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit tenant")
             }
 
         }
@@ -227,7 +214,7 @@ fun UtilityCardItem(utility: Utility, landlordId: String, destination: String, p
 
 @Preview(showBackground = true)
 @Composable
-fun LandlordListUtilitiesPreview() {
+fun LandlordListTenantsPreview() {
     val property = Property(
         "70xF0AwhddGHRuSGYT7L",
         "Jozefa Rostafinskiego",
@@ -237,8 +224,7 @@ fun LandlordListUtilitiesPreview() {
         "Wroclaw",
         "Pth5PB4PlYSxtb6vYX4MVZRmen52"
     )
-
     AppartamentyTheme {
-        SetUtilityData("Pth5PB4PlYSxtb6vYX4MVZRmen52", property,"list_properties")
+        SetTenantData("Pth5PB4PlYSxtb6vYX4MVZRmen52", property, "list_properties")
     }
 }

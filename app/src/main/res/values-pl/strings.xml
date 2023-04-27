@@ -62,4 +62,6 @@
     <string name="per_month">miesięcznie</string>
     <string name="edit_utility">Edytuj medium</string>
     <string name="edit_address">Edytuj adres</string>
+    <string name="edit_tenant">Edytuj informacje o lokatorze</string>
+    <string name="back_to_property_list">Wróć do szczegółów nieruchomości</string>
 </resources>

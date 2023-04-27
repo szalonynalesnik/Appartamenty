@@ -258,7 +258,7 @@ fun AddressEditForm(
                 val intent = Intent(context, LandlordListUtilities::class.java)
                 intent.putExtra("landlordId", landlordId)
                 intent.putExtra("destination", destination)
-                intent.putExtra("propertyId", existingProperty.propertyId)
+                intent.putExtra("property", existingProperty)
                 context.startActivity(intent)
             }) {
             Text(text = stringResource(R.string.edit_utilities))
@@ -272,7 +272,7 @@ fun AddressEditForm(
                 val intent = Intent(context, LandlordListUtilities::class.java)
                 intent.putExtra("landlordId", landlordId)
                 intent.putExtra("destination", destination)
-                intent.putExtra("propertyId", existingProperty.propertyId)
+                intent.putExtra("property", existingProperty)
                 context.startActivity(intent)
             }) {
             Text(text = stringResource(R.string.manage_tenants))
@@ -289,125 +289,11 @@ fun AddressEditForm(
                     city = city,
                     propertyId = existingProperty.propertyId!!
                 )
-//        if (electricityPrice.toDouble() > 0) {
-//            editUtility(constant = false, name = "Electricity", price = electricityPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
-//        if (electricityPriceConstant.toDouble() > 0) {
-//            editUtility(constant = true, name = "Electricity - constant", price = electricityPriceConstant.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
-//        if (gasPrice.toDouble() > 0) {
-//            editUtility(constant = false, name = "Gas", price = gasPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
-//        if (gasPriceConstant.toDouble() > 0) {
-//            editUtility(constant = true, name = "Gas - constant", price = gasPriceConstant.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
-//        if (waterPrice.toDouble() > 0) {
-//            editUtility(constant = false, name = "Water", price = waterPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
-//        if (internetPrice.toDouble() > 0) {
-//            editUtility(constant = true, name = "Internet", price = internetPrice.toDouble(), street = street, streetNo = streetNo, apartmentNo = apartmentNo, postalCode = postalCode)
-//        }
             }, shape = RoundedCornerShape(20.dp)
         ) {
             Text(text = stringResource(R.string.confirm))
         }
 
-//        Text(
-//            text = stringResource(R.string.utilities_available_in_the_property),
-//            style = MaterialTheme.typography.titleMedium,
-//            color = MaterialTheme.colorScheme.onBackground,
-//            fontWeight = FontWeight.Normal,
-//            modifier = Modifier
-//                .padding(bottom = 8.dp)
-//                .align(Alignment.Start)
-//        )
-//        CustomOutlinedTextField(
-//            value = electricityPrice,
-//            onValueChange = { electricityPrice = it },
-//            label = stringResource(R.string.electricity),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Next
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.ElectricBolt,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//        CustomOutlinedTextField(
-//            value = electricityPriceConstant,
-//            onValueChange = { electricityPriceConstant = it },
-//            label = stringResource(R.string.electricity_constant),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Next
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.ElectricBolt,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//        CustomOutlinedTextField(
-//            value = gasPrice,
-//            onValueChange = { gasPrice = it },
-//            label = stringResource(R.string.gas),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Next
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.PropaneTank,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//        CustomOutlinedTextField(
-//            value = gasPriceConstant,
-//            onValueChange = { gasPriceConstant = it },
-//            label = stringResource(R.string.gas_constant),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Next
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.PropaneTank,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//        CustomOutlinedTextField(
-//            value = waterPrice,
-//            onValueChange = { waterPrice = it },
-//            label = stringResource(R.string.water),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Next
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.WaterDrop,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//        CustomOutlinedTextField(
-//            value = internetPrice,
-//            onValueChange = { internetPrice = it },
-//            label = stringResource(R.string.internet),
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Number,
-//                imeAction = ImeAction.Done
-//            ),
-//            singleLine = true,
-//            leadingIconImageVector = Icons.Default.Wifi,
-//            keyboardActions = KeyboardActions(
-//                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//            )
-//        )
-//
-//
-//    }
     }
 
 }
