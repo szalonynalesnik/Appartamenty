@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -85,21 +86,16 @@ fun SetPropertyData(landlordId: String, destination: String) {
                     // and we will pass this object class inside
                     // our arraylist which we have created for list view.
                     propertyList.add(c)
-
                 }
             }
         }
-
     // on below line we are calling method to display UI
     ShowLazyList(propertyList, landlordId, destination)
-
 }
 
 @Composable
 fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String, destination: String) {
-
     val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,8 +116,6 @@ fun ShowLazyList(propertyList: SnapshotStateList<Property?>, landlordId: String,
             itemsIndexed(propertyList) { index, item ->
                 if (item != null) {
                     CardItem(item, landlordId, destination)
-                } else {
-                    Text(text = stringResource(R.string.no_properties))
                 }
             }
         }
@@ -170,26 +164,46 @@ fun CardItem(property: Property, landlordId: String, destination: String) {
             }
         }
     ) {
-        Column(
+        Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = property.street.toString() + " " + property.streetNo.toString() + "/" + property.apartmentNo.toString() + ", " + property.city.toString(),
-                textAlign = TextAlign.Center
-            )
+                    .weight(4f)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 10.dp),
+                    text = property.street.toString() + " " + property.streetNo.toString() + "/" + property.apartmentNo.toString() + ", " + property.city.toString(),
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                IconButton(
+                    onClick = {
+                        val intent = Intent(context, LandlordEditProperty::class.java)
+                        intent.putExtra("property", property).putExtra("landlordId", landlordId).putExtra("destination", destination)
+                        context.startActivity(intent)
+                    }
+                ) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Add new property")
+                }
+            }
         }
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true, locale = "pl")
 @Composable
-fun DefaultPreview() {
+fun LandlordListPropertiesPreview() {
     AppartamentyTheme {
-        SetPropertyData(landlordId = "XJWXUFoiAEV0efxdGpPrdDNVS3M2", "list_properties")
+        SetPropertyData(landlordId = "Pth5PB4PlYSxtb6vYX4MVZRmen52", "list_properties")
     }
 }

@@ -13,6 +13,21 @@
         android:theme="@style/Theme.Appartamenty"
         tools:targetApi="31">
         <activity
+            android:name=".LandlordEditUtility"
+            android:exported="false"
+            android:label="@string/title_activity_landlord_edit_utility"
+            android:theme="@style/Theme.Appartamenty" />
+        <activity
+            android:name=".LandlordListUtilities"
+            android:exported="false"
+            android:label="@string/title_activity_landlord_list_utilities"
+            android:theme="@style/Theme.Appartamenty" />
+        <activity
+            android:name=".LandlordEditProperty"
+            android:exported="false"
+            android:label="@string/title_activity_landlord_edit_property"
+            android:theme="@style/Theme.Appartamenty" />
+        <activity
             android:name=".LandlordListMeterReadings"
             android:exported="false"
             android:label="@string/title_activity_landlord_list_meter_readings"

@@ -56,4 +56,10 @@
     <string name="total">Kwota</string>
     <string name="usage">Zużycie</string>
     <string name="address_of_the_property">Adres nieruchomości</string>
+    <string name="edit_utilities">Edytuj media</string>
+    <string name="manage_tenants">Zarządzaj lokatorami</string>
+    <string name="per_unit">za jednostkę zużycia</string>
+    <string name="per_month">miesięcznie</string>
+    <string name="edit_utility">Edytuj medium</string>
+    <string name="edit_address">Edytuj adres</string>
 </resources>

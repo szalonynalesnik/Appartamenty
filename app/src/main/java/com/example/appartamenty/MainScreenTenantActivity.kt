@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.appartamenty.ui.theme.AppartamentyTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class MainScreenTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +62,7 @@ fun TenantMainScreen(context: Context, tenantId: String) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun TenantChooser(context: Context, tenantId: String) {
     Column(

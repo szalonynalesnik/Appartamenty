@@ -1,5 +1,6 @@
 package com.example.appartamenty
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -42,6 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import java.util.Objects
 
+
 class LandlordAddRealEstate : ComponentActivity() {
     private val auth by lazy {
         Firebase.auth
@@ -82,14 +84,15 @@ fun LandlordAddRealEstateMainScreen(auth: FirebaseAuth, landlordId: String) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AddressForm(auth, landlordId)
+        val context = LocalContext.current
+        AddressForm(context, landlordId)
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddressForm(auth: FirebaseAuth, landlordId: String) {
+fun AddressForm(context: Context, landlordId: String) {
 
     val database = FirebaseFirestore.getInstance()
     val focusManager = LocalFocusManager.current
@@ -125,10 +128,11 @@ fun AddressForm(auth: FirebaseAuth, landlordId: String) {
                     MainActivity::class.java.simpleName,
                     "Adding property to database successful"
                 )
+                val intent = Intent(context, LandlordListPropertiesActivity::class.java)
+                intent.putExtra("property", property).putExtra("landlordId", landlordId).putExtra("destination", "list_properties")
+                context.startActivity(intent)
             }
         }
-
-
 
     fun addUtility(
         constant: Boolean,

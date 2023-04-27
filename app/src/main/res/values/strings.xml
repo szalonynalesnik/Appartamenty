@@ -111,4 +111,13 @@
     <string name="total">Total</string>
     <string name="usage">Usage</string>
     <string name="address_of_the_property">Address of the property</string>
+    <string name="title_activity_landlord_edit_property" translatable="false">LandlordEditProperty</string>
+    <string name="title_activity_landlord_list_utilities" translatable="false">LandlordListUtilities</string>
+    <string name="edit_utilities">Edit utilities</string>
+    <string name="manage_tenants">Manage tenants</string>
+    <string name="per_unit">" per unit"</string>
+    <string name="per_month">" per month"</string>
+    <string name="title_activity_landlord_edit_utility" translatable="false">LandlordEditUtility</string>
+    <string name="edit_utility">Edit utility</string>
+    <string name="edit_address">Edit address</string>
 </resources>
