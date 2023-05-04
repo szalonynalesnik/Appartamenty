@@ -144,38 +144,27 @@ fun ReadingForm(tenantId: String) {
     }
 
     fun addCalculation(datePicked: String, utilityName: String, newValue: Double, timestamp: Long) {
-
         var calculation = UtilityPrice()
-
-        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Starting to add reading")
-
-        // find tenant in database
+        Log.d(TenantAddReadingsActivity::class.java.simpleName, "Starting to calculate usage")
         var tenant = database.collection("tenants").document(tenantId).get()
-
         tenant.addOnSuccessListener { doc ->
             if (doc.exists()) {
                 Log.d(TenantAddReadingsActivity::class.java.simpleName, "Tenant retrieved")
-                // find ID of property that tenant is assigned to
                 var propertyId = doc.get("propertyId")
-                // find utilities available in the property
-                database.collection("utilities").whereEqualTo("propertyId", propertyId)
-                    .whereEqualTo("name", utilityName).get()
+                database.collection("utilities").whereEqualTo("propertyId", propertyId).whereEqualTo("name", utilityName).get()
                     .addOnSuccessListener { matchingUtilities ->
                         for (matchingUtility in matchingUtilities) {
                             var utilityId = matchingUtility.id
-                            database.collection("meter_readings")
-                                .whereEqualTo("utilityId", utilityId)
+                            database.collection("meter_readings").whereEqualTo("utilityId", utilityId)
                                 .orderBy("date", Query.Direction.DESCENDING).limit(1).get()
                                 .addOnSuccessListener { documents ->
                                     for (document in documents) {
                                         val pastReading =
                                             document.toObject(MeterReading::class.java)
-                                        database.collection("utilities")
-                                            .whereEqualTo("name", utilityName).get()
+                                        database.collection("utilities").whereEqualTo("name", utilityName).get()
                                             .addOnSuccessListener { documents ->
                                                 for (document in documents) {
-                                                    val utility =
-                                                        document.toObject(Utility::class.java)
+                                                    val utility = document.toObject(Utility::class.java)
                                                     calculation = UtilityPrice(
                                                         utilityName,
                                                         newValue,
@@ -185,18 +174,12 @@ fun ReadingForm(tenantId: String) {
                                                         timestamp,
                                                         propertyId.toString()
                                                     )
-
                                                     database.collection("monthly_calculations")
                                                         .add(calculation)
                                                         .addOnSuccessListener {
                                                             Log.d(
                                                                 "SUCCESS",
                                                                 "Calculation added successfully"
-                                                            )
-                                                            addReading(
-                                                                datePicked,
-                                                                utilityName,
-                                                                newValue
                                                             )
                                                         }
                                                         .addOnFailureListener {
@@ -320,20 +303,23 @@ fun ReadingForm(tenantId: String) {
                             TenantAddReadingsActivity::class.java.simpleName,
                             "Adding electricity"
                         )
+
+                        addReading(datePicked, "Electricity", electricityReading.toDouble())
                         addCalculation(datePicked, "Electricity", electricityReading.toDouble(), timestamp)
-                        //addReading(datePicked, "Electricity", electricityReading.toDouble())
 
                     }
                     if (gasReading.toDouble() > 0) {
                         Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding gas")
+                        addReading(datePicked, "Gas", gasReading.toDouble())
                         addCalculation(datePicked, "Gas", gasReading.toDouble(), timestamp)
-                        //addReading(datePicked, "Gas", gasReading.toDouble())
+
 
                     }
                     if (waterReading.toDouble() > 0) {
                         Log.d(TenantAddReadingsActivity::class.java.simpleName, "Adding water")
+                        addReading(datePicked, "Water", waterReading.toDouble())
                         addCalculation(datePicked, "Water", waterReading.toDouble(), timestamp)
-                        // addReading(datePicked, "Water", waterReading.toDouble())
+
 
                     }
                     val intent = Intent(context, MainScreenTenantActivity::class.java)
@@ -341,7 +327,7 @@ fun ReadingForm(tenantId: String) {
                     context.startActivity(intent)
                 }, shape = RoundedCornerShape(20.dp)
             ) {
-                Text(text = stringResource(R.string.confirm_send_to_landlord))
+                Text(text = stringResource(R.string.confirm))
             }
 
         }

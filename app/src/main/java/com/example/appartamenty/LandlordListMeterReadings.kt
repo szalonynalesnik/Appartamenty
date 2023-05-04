@@ -8,8 +8,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -54,12 +57,10 @@ class LandlordListMeterReadings : ComponentActivity() {
 @Composable
 fun SetReadingsData(property: Property, landlordId: String) {
 
-    val readingsList = mutableStateListOf<MeterReading?>()
-    // on below line creating variable for freebase database
-    // and database reference.
+    val waterList = mutableStateListOf<MeterReading?>()
+    val gasList = mutableStateListOf<MeterReading?>()
+    val electricityList = mutableStateListOf<MeterReading?>()
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    // on below line getting data from our database
     db.collection("utilities").whereEqualTo("propertyId", property.propertyId).get()
         .addOnSuccessListener { utilities ->
             Log.d(
@@ -69,7 +70,7 @@ fun SetReadingsData(property: Property, landlordId: String) {
             for (utility in utilities) {
                 val utilityId = utility.id
                 db.collection("meter_readings").whereEqualTo("utilityId", utilityId)
-                    .orderBy("date", Query.Direction.ASCENDING).get()
+                    .orderBy("date", Query.Direction.DESCENDING).get()
                     .addOnSuccessListener { queryDocumentSnapshots ->
                         Log.d(
                             LandlordListMeterReadings::class.java.simpleName,
@@ -81,17 +82,17 @@ fun SetReadingsData(property: Property, landlordId: String) {
                                 LandlordListMeterReadings::class.java.simpleName,
                                 "Meter readings not empty"
                             )
-                            // if the snapshot is not empty we are
-                            // hiding our progress bar and adding
-                            // our data in a list.
                             val list = queryDocumentSnapshots.documents
                             for (reading in list) {
-                                // after getting this list we are passing that
-                                // list to our object class.
                                 val c: MeterReading? = reading.toObject(MeterReading::class.java)
-                                // and we will pass this object class inside
-                                // our arraylist which we have created for list view.
-                                readingsList.add(c)
+                                if (c!!.utilityName == "Water") {
+                                    waterList.add(c)
+                                } else if (c!!.utilityName == "Gas") {
+                                    gasList.add(c)
+                                }
+                                if (c!!.utilityName == "Electricity") {
+                                    electricityList.add(c)
+                                }
                                 Log.d(
                                     LandlordListMeterReadings::class.java.simpleName,
                                     "Added utility to list"
@@ -114,26 +115,24 @@ fun SetReadingsData(property: Property, landlordId: String) {
 
 
     // on below line we are calling method to display UI
-    ShowLazyListOfReadings(readingsList, landlordId)
+    ShowLazyListOfReadings(waterList, gasList, electricityList, landlordId)
 
 }
 
 @Composable
-fun ShowLazyListOfReadings(readingsList: SnapshotStateList<MeterReading?>, landlordId: String) {
-
-    val context = LocalContext.current
-    readingsList.sortByDescending { it?.date }
-    readingsList.sortBy { it?.utilityName }
-
-
-    // var latestReadingsList = mutableListOf(readingsList[0], readingsList[1], readingsList[2])
-    // var previousReadingsList = mutableListOf(readingsList[3], readingsList[4], readingsList[5])
+fun ShowLazyListOfReadings(
+    waterList: SnapshotStateList<MeterReading?>,
+    gasList: SnapshotStateList<MeterReading?>,
+    electricityList: SnapshotStateList<MeterReading?>,
+    landlordId: String
+) {
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 16.dp, horizontal = 16.dp),
+//                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
 
@@ -144,15 +143,49 @@ fun ShowLazyListOfReadings(readingsList: SnapshotStateList<MeterReading?>, landl
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 8.dp)
                     .align(Alignment.Start)
             )
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
-            ) {
-                items(readingsList.size) { index ->
-                    ReadingCardItem(readingsList[index]!!, landlordId)
+            Text(
+                text = stringResource(R.string.water),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.Start)
+            )
+            LazyColumn() {
+                items(waterList.size) { index ->
+                    ReadingCardItem(waterList[index]!!, landlordId)
+                }
+            }
+            Text(
+                text = stringResource(R.string.gas),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.Start)
+            )
+            LazyColumn() {
+                items(gasList.size) { index ->
+                    ReadingCardItem(gasList[index]!!, landlordId)
+                }
+            }
+            Text(
+                text = stringResource(R.string.electricity),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.Start)
+            )
+            LazyColumn() {
+                items(electricityList.size) { index ->
+                    ReadingCardItem(electricityList[index]!!, landlordId)
                 }
             }
 
@@ -163,7 +196,6 @@ fun ShowLazyListOfReadings(readingsList: SnapshotStateList<MeterReading?>, landl
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadingCardItem(reading: MeterReading, landlordId: String) {
-    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -174,9 +206,6 @@ fun ReadingCardItem(reading: MeterReading, landlordId: String) {
         ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
-//            val intent = Intent(context, LandlordPropertyDetails::class.java)
-//            intent.putExtra("property", property).putExtra("landlordId", landlordId)
-//            context.startActivity(intent)
         }
     ) {
         Column(
@@ -188,7 +217,15 @@ fun ReadingCardItem(reading: MeterReading, landlordId: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                text = "${reading.date} \n ${reading.utilityName} \n" + stringResource(R.string.value) + "${reading.value}",
+                text = "${reading.date}",
+                textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                text = stringResource(R.string.value) + ": ${reading.value}",
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
         }

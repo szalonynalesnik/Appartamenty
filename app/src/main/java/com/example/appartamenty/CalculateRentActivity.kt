@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Tenant
+import com.example.appartamenty.data.TotalRentForLandlord
 import com.example.appartamenty.data.Utility
 import com.example.appartamenty.data.UtilityPrice
 import com.example.appartamenty.ui.theme.AppartamentyTheme
@@ -52,8 +53,7 @@ class CalculateRentActivity : ComponentActivity() {
                 ) {
                     if (tenantId != null) {
                         SetRentDataForTenant(tenantId)
-                    }
-                    else if (intent.extras?.get("property") != null){
+                    } else if (intent.extras?.get("property") != null) {
                         val property = intent.extras?.get("property") as Property
                         SetRentDataForLandlord(property)
                     }
@@ -69,7 +69,7 @@ fun SetRentDataForTenant(tenantId: String) {
 
     val calculationsList = mutableStateListOf<UtilityPrice?>()
     var totalRent: Double = 0.0
-
+    var numberOfTenants: Int = 1
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     //find tenant's data
@@ -81,53 +81,59 @@ fun SetRentDataForTenant(tenantId: String) {
             }
             val propertyId = document.get("propertyId")
             // retrieving utilities assigned to property
-            db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
-                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
-                .get()
-                .addOnSuccessListener { calculations ->
-                    Log.d(
-                        "SUCCESS"::class.java.simpleName,
-                        "Calculations retrieved successfully"
-                    )
-                    for (calculation in calculations) {
-                        val calculation = calculation.toObject(UtilityPrice::class.java)
-                        calculationsList.add(calculation)
-                        totalRent += calculation.total
-                        // retrieving meter readings for each utility
+            db.collection("tenants").whereEqualTo("propertyId", propertyId).get()
+                .addOnSuccessListener { tenants ->
+                    for (tenant in tenants) {
+                        numberOfTenants += 1
                     }
-
-                    db.collection("utilities").whereEqualTo("propertyId", propertyId)
-                        .whereEqualTo("constant", true).get()
-                        .addOnSuccessListener { constantUtilities ->
-                            for (utility in constantUtilities) {
-                                val constantUtility = utility.toObject(Utility::class.java)
-                                calculationsList.add(
-                                    UtilityPrice(
-                                        constantUtility.name!!,
-                                        1.0,
-                                        0.0,
-                                        constantUtility.price,
-                                        constantUtility.price,
-                                        System.currentTimeMillis(),
-                                        propertyId.toString()
-                                    )
-                                )
-                                totalRent += constantUtility.price
-                            }
-                            calculationsList.sortedBy { "name" }
-                            calculationsList.add(
-                                UtilityPrice(
-                                    "Total rent",
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    totalRent,
-                                    System.currentTimeMillis(),
-                                    propertyId.toString()
-                                )
+                    db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
+                        .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
+                        .get()
+                        .addOnSuccessListener { calculations ->
+                            Log.d(
+                                "SUCCESS"::class.java.simpleName,
+                                "Calculations retrieved successfully"
                             )
-                        }
-                }.addOnFailureListener { }
+                            for (calculation in calculations) {
+                                val calculation = calculation.toObject(UtilityPrice::class.java)
+                                calculationsList.add(calculation)
+                                totalRent += (calculation.total) / numberOfTenants
+                            }
+
+                            db.collection("utilities").whereEqualTo("propertyId", propertyId)
+                                .whereEqualTo("constant", true).get()
+                                .addOnSuccessListener { constantUtilities ->
+                                    for (utility in constantUtilities) {
+                                        val constantUtility = utility.toObject(Utility::class.java)
+                                        calculationsList.add(
+                                            UtilityPrice(
+                                                constantUtility.name!!,
+                                                1.0,
+                                                0.0,
+                                                constantUtility.price,
+                                                constantUtility.price,
+                                                System.currentTimeMillis(),
+                                                propertyId.toString()
+                                            )
+                                        )
+                                        totalRent += (constantUtility.price) / numberOfTenants
+                                    }
+                                    calculationsList.sortedBy { "name" }
+                                    calculationsList.add(
+                                        UtilityPrice(
+                                            "Total rent",
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            totalRent,
+                                            System.currentTimeMillis(),
+                                            propertyId.toString()
+                                        )
+                                    )
+
+                                }
+                        }.addOnFailureListener { }
+                }
         }
 
     ShowLazyListOfCalculations(calculationsList)
@@ -139,100 +145,108 @@ fun SetRentDataForTenant(tenantId: String) {
 @Composable
 fun SetRentDataForLandlord(property: Property) {
 
-    val calculationsList = mutableStateListOf<UtilityPrice?>()
-    var totalRent: Double = 0.0
-
+    val rentsForLandlord = mutableStateListOf<TotalRentForLandlord?>()
+    var totalRentFromTenants: Double = 0.0
+    var totalRentFromUsage: Double = 0.0
+    var numberOfTenants: Int = 0
     val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     val propertyId = property.propertyId
     // retrieving utilities assigned to property
 
-    db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
-        .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
-        .get()
-        .addOnSuccessListener { calculations ->
-            Log.d(
-                "SUCCESS"::class.java.simpleName,
-                "Calculations retrieved successfully"
-            )
-            for (calculation in calculations) {
-                val calculation = calculation.toObject(UtilityPrice::class.java)
-                calculationsList.add(calculation)
-                totalRent += calculation.total
-                // retrieving meter readings for each utility
+    db.collection("tenants").whereEqualTo("propertyId", propertyId).get()
+        .addOnSuccessListener { tenants ->
+            for (tenant in tenants) {
+                numberOfTenants += 1
+                val t = tenant.toObject(Tenant::class.java)
+                totalRentFromTenants += t.rent!!
             }
-
-            db.collection("utilities").whereEqualTo("propertyId", propertyId)
-                .whereEqualTo("constant", true).get()
-                .addOnSuccessListener { constantUtilities ->
-                    for (utility in constantUtilities) {
-                        val constantUtility = utility.toObject(Utility::class.java)
-                        calculationsList.add(
-                            UtilityPrice(
-                                constantUtility.name!!,
-                                1.0,
-                                0.0,
-                                constantUtility.price,
-                                constantUtility.price,
-                                System.currentTimeMillis(),
-                                propertyId.toString()
-                            )
-                        )
-                        totalRent += constantUtility.price
+            db.collection("monthly_calculations").whereEqualTo("propertyId", propertyId)
+                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3)
+                .get()
+                .addOnSuccessListener { calculations ->
+                    Log.d(
+                        "SUCCESS"::class.java.simpleName,
+                        "Calculations retrieved successfully"
+                    )
+                    for (calculation in calculations) {
+                        val calculation = calculation.toObject(UtilityPrice::class.java)
+                        totalRentFromUsage += calculation.total
                     }
 
-                    db.collection("tenants").whereEqualTo("propertyId", propertyId).get()
-                        .addOnSuccessListener{ documents ->
-                            for (document in documents) {
-                                val tenant = document.toObject(Tenant::class.java)
-                                totalRent += tenant.rent!!
+                    db.collection("utilities").whereEqualTo("propertyId", propertyId)
+                        .whereEqualTo("constant", true).get()
+                        .addOnSuccessListener { constantUtilities ->
+                            for (utility in constantUtilities) {
+                                val constantUtility = utility.toObject(Utility::class.java)
+                                totalRentFromUsage += constantUtility.price
                             }
-                            calculationsList.sortedBy { "name" }
-                            var newTotalRent = UtilityPrice(
-                                name ="Total rent",
-                                lastReading = 0.0,
-                                previousReading = 0.0,
-                                pricePerUnit =0.0,
-                                total = totalRent,
+                            var newTotalRentForLandlord = TotalRentForLandlord(
+                                totalRentFromTenants = totalRentFromTenants,
+                                totalRentFromUsage = totalRentFromUsage,
+                                numberOfTenants = numberOfTenants,
+                                totalRent = totalRentFromTenants + totalRentFromUsage,
                                 timestamp = System.currentTimeMillis(),
                                 propertyId = propertyId.toString()
                             )
-                            calculationsList.add(
-                                newTotalRent
-                            )
-                            db.collection("total_rents").add(newTotalRent)
+                            rentsForLandlord.add(newTotalRentForLandlord)
+                            db.collection("total_rents").add(newTotalRentForLandlord)
                         }.addOnFailureListener {
-                            calculationsList.sortedBy { "name" }
-                            calculationsList.add(
-                                UtilityPrice(
-                                    "Total rent",
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                    totalRent,
-                                    System.currentTimeMillis(),
-                                    propertyId.toString()
-                                )
-                            )
+
                         }
 
-
                 }
-
         }
 
-    ShowLazyListOfCalculations(calculationsList)
+
+    ShowLazyListForLandlord(rentsForLandlord)
 
 
+}
+
+@Composable
+fun ShowLazyListForLandlord(rentsForLandlord: SnapshotStateList<TotalRentForLandlord?>) {
+    val sdf = SimpleDateFormat("dd/MM/yyyy")
+    val currentDate = sdf.format(Date())
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.rent_for_date) + currentDate,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .align(Alignment.Start)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            LazyColumn {
+                itemsIndexed(rentsForLandlord) { index, rent ->
+                    if (rent != null) {
+                        RentItem(rent)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun ShowLazyListOfCalculations(
     calculationsList: SnapshotStateList<UtilityPrice?>
 ) {
-
-    // val context = LocalContext.current
-
+    
     val sdf = SimpleDateFormat("dd/MM/yyyy")
     val currentDate = sdf.format(Date())
 
@@ -269,10 +283,48 @@ fun ShowLazyListOfCalculations(
     }
 }
 
+@Composable
+fun RentItem(rent: TotalRentForLandlord) {
+    Card(
+        modifier = Modifier
+            .fillMaxSize()
+            .width(IntrinsicSize.Max)
+            .padding(vertical = 10.dp, horizontal = 10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(vertical = 16.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(R.string.rent_from_usage) + String.format("%.2f", rent.totalRentFromUsage)
+                        + "\n" + stringResource(R.string.rent_from_tenants) + String.format("%.2f", rent.totalRentFromTenants)
+                        + "\n" + stringResource(R.string.total_rent_for_landlord)  + String.format("%.2f", rent.totalRent)
+                        + "\n" + stringResource(R.string.number_of_tenants) + "${rent.numberOfTenants}",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Normal
+            )
+
+        }
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculationCardItem(calculation: UtilityPrice) {
-    val context = LocalContext.current
 
     if (calculation.name == "Total rent") {
         Card(
@@ -288,9 +340,6 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             ),
-            onClick = {
-                //TODO
-            }
         ) {
             Column(
                 modifier = Modifier
@@ -359,9 +408,6 @@ fun CalculationCardItem(calculation: UtilityPrice) {
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             ),
-            onClick = {
-                //TODO
-            }
         ) {
             Column(
                 modifier = Modifier
@@ -391,6 +437,16 @@ fun CalculationCardItem(calculation: UtilityPrice) {
 @Composable
 fun CalculateRentPreview() {
     AppartamentyTheme {
-        SetRentDataForTenant("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
+        val property = Property(
+            "70xF0AwhddGHRuSGYT7L",
+            "Jozefa Rostafinskiego",
+            "16",
+            "17",
+            "50-247",
+            "Wroclaw",
+            "Pth5PB4PlYSxtb6vYX4MVZRmen52"
+        )
+        //SetRentDataForTenant("GqXmdTRxynWHhnnzJcSm5M6ei6b2")
+        SetRentDataForLandlord(property)
     }
 }

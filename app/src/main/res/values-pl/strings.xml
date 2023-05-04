@@ -67,4 +67,8 @@
     <string name="delete_tenant">Usuń lokatora</string>
     <string name="per_m3">za m3</string>
     <string name="per_kwh">za kWh</string>
+    <string name="rent_from_usage">"Czynsz za zużycie: "</string>
+    <string name="rent_from_tenants">"Czynsz od lokatorów: "</string>
+    <string name="total_rent_for_landlord">"Łączny czynsz: "</string>
+    <string name="number_of_tenants">"Liczba lokatorów: "</string>
 </resources>

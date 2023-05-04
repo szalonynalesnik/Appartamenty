@@ -221,7 +221,7 @@ fun UtilityEditForm(
             modifier = Modifier
                 .padding(top = 16.dp),
             onClick = {
-                if (price.toDouble() > 0) {
+                if (price.isNotBlank()) {
                     editUtility(price.toDouble())
                 }
             }, shape = RoundedCornerShape(20.dp)

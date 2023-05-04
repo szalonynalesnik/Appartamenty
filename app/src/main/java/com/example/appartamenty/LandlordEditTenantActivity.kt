@@ -41,7 +41,9 @@ import com.example.appartamenty.data.Property
 import com.example.appartamenty.data.Tenant
 import com.example.appartamenty.data.Utility
 import com.example.appartamenty.ui.theme.AppartamentyTheme
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 class LandlordEditTenantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,13 +145,14 @@ fun TenantEditForm(
             }
     }
 
-    fun deleteTenant(
-    ) {
+    val auth = Firebase.auth
+
+    fun deleteTenant() {
         database.collection("tenants").document(existingTenant.tenantId!!).delete()
             .addOnSuccessListener { doc ->
                 Log.d(
                     MainActivity::class.java.simpleName,
-                    "Updating tenant successful"
+                    "Deleting tenant successful"
                 )
                 val intent = Intent(context, LandlordListTenantsActivity::class.java)
                 intent.putExtra("landlordId", landlordId)
